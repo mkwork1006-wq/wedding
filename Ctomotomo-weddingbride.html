@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新婦プロフィール | トモトモウェディング</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-nav">
+      <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav-menu" aria-hidden="true">
+        <a href="index.html">ホーム</a>
+        <a href="groom.html">新郎プロフィール</a>
+        <a href="gallery.html">ギャラリー</a>
+        <a href="qa.html">Q＆A</a>
+      </nav>
+    </div>
+    <div class="image-placeholder">【新婦のイメージ】</div>
+    <div class="hero-text">
+      <p>新婦　△△　△△</p>
+      <h1>新婦プロフィール</h1>
+      <p class="hero-date">やさしさをまとって</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>ひとこと</h2>
+      <p>丁寧な対応ときめ細やかな気遣いが身上。花と過ごす時間が大好きで、色や香りの調和にうっとりします。</p>
+    </section>
+
+    <section>
+      <h2>ポイント</h2>
+      <ul class="notes-list">
+        <li>出身：京都府舞鶴市</li>
+        <li>趣味：手作りの料理、フラワーアレンジ、映画鑑賞</li>
+        <li>職業：デザイン業務に携わり、日々アイデアを形に</li>
+        <li>性格：穏やかながらチャレンジ精神も忘れない</li>
+        <li>大切にすること：問題が起きても笑顔を絶やさず前を向くこと</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="index.html" class="panel-button">トップに戻る</a></p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.nav-menu');
+
+    hamburger.addEventListener('click', () => {
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('open');
+      menu.setAttribute('aria-hidden', String(expanded));
+    });
+  </script>
+</body>
+</html>

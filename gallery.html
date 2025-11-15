@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tomotomo Wedding | ホーム</title>
+  <title>Tomotomo Wedding | ギャラリー</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="page page-home">
+<body class="page page-gallery">
   <header class="site-header">
     <div class="brand">
       <span class="brand-icon" aria-hidden="true"></span>
@@ -51,50 +51,37 @@
   </div>
 
   <main class="page-main">
-    <section class="hero">
-      <div class="image-placeholder">【メインビジュアル】</div>
+    <section class="page-hero">
       <div>
-        <p class="kicker">Tomotomo Wedding 2025</p>
-        <h1 class="hero-title">山下ともや &amp; 神谷友実</h1>
-        <p>2025年11月23日 日曜日 13:30 START</p>
-        <p>会場：ホテルアンサンブル（東京都中央区）</p>
-        <ul class="info-list">
-          <li>ドレスコード：スマートカジュアルでご自由に</li>
-          <li>受付開始：13:00｜挙式：13:30｜披露宴：14:15</li>
-          <li>受付ロビーにてウェルカムドリンクをご用意しています</li>
-        </ul>
+        <p class="kicker">Gallery</p>
+        <h1 class="page-hero-title">ギャラリー</h1>
+        <p>お付き合い初期の旅写真からプロポーズの日まで、ふたりの思い出をタイル状に並べました。タップすると大きく表示され、エピソードを振り返りながらご覧いただけます。</p>
       </div>
+      <div class="image-placeholder">【ギャラリーキービジュアル】</div>
     </section>
 
     <section class="section">
-      <h2>知りたい項目をお選びください</h2>
-      <p>各ボタンをタップすると該当の詳細ページへ遷移します。片手で操作しやすいように大きめのカードにしました。</p>
-      <div class="menu-grid">
-        <a class="menu-card" href="greeting.html">ごあいさつ<span>Greeting</span></a>
-        <a class="menu-card" href="groom.html">新郎プロフィール<span>Groom</span></a>
-        <a class="menu-card" href="bride.html">新婦プロフィール<span>Bride</span></a>
-        <a class="menu-card" href="seating.html">席次表<span>Seating</span></a>
-        <a class="menu-card" href="course.html">コース料理<span>Course</span></a>
-        <a class="menu-card" href="timeline.html">タイムライン<span>Timeline</span></a>
-        <a class="menu-card" href="gallery.html">ギャラリー<span>Gallery</span></a>
-        <a class="menu-card" href="qa.html">Q&amp;A<span>FAQ</span></a>
-        <a class="menu-card" href="access.html">アクセス<span>Access</span></a>
-        <a class="menu-card" href="notes.html">注意事項<span>Notice</span></a>
+      <h2>フォトコレクション</h2>
+      <div class="gallery-grid">
+        <button class="gallery-item" type="button" data-gallery-item data-label="【初デートのカフェ】">【初デートのカフェ】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【夏フェスの夕焼け】">【夏フェスの夕焼け】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【旅先での自転車散策】">【旅先での自転車散策】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【地元のお祭り】">【地元のお祭り】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【記念日の手料理】">【記念日の手料理】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【家族と過ごした正月】">【家族と過ごした正月】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【桜並木の散歩道】">【桜並木の散歩道】</button>
+        <button class="gallery-item" type="button" data-gallery-item data-label="【プロポーズの瞬間】">【プロポーズの瞬間】</button>
       </div>
-    </section>
-
-    <section class="section">
-      <h2>本日のハイライト</h2>
-      <p>タイムラインやコース料理などの詳細は各ページでご紹介していますが、全体の流れをざっくり確認されたい方はこちらもご覧ください。</p>
-      <ul class="timeline-list">
-        <li class="timeline-item"><time>13:00</time><p>受付開始。ウェルカムドリンクで一息おつきください。</p></li>
-        <li class="timeline-item"><time>13:30</time><p>チャペルにて挙式。ゲストの皆さまにも誓いの瞬間へご参加いただきます。</p></li>
-        <li class="timeline-item"><time>14:15</time><p>披露宴スタート。オリジナルコース料理とともにお楽しみください。</p></li>
-        <li class="timeline-item"><time>15:30</time><p>ケーキセレモニーとフォトタイム。たくさん写真を撮ってください。</p></li>
-        <li class="timeline-item"><time>17:30</time><p>お見送り。プチギフトをご用意しています。</p></li>
-      </ul>
     </section>
   </main>
+
+  <div class="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="lightbox-label" data-lightbox>
+    <div class="lightbox-content">
+      <button class="lightbox-close" type="button" aria-label="閉じる" data-lightbox-close>&times;</button>
+      <div class="lightbox-visual" data-lightbox-figure>【ギャラリー写真】</div>
+      <p id="lightbox-label" data-lightbox-label>写真を拡大表示</p>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <p>© 2025 Tomotomo Wedding</p>

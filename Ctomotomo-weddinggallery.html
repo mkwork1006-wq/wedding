@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ギャラリー | トモトモウェディング</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-nav">
+      <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav-menu" aria-hidden="true">
+        <a href="index.html">ホーム</a>
+        <a href="groom.html">新郎プロフィール</a>
+        <a href="bride.html">新婦プロフィール</a>
+        <a href="qa.html">Q＆A</a>
+      </nav>
+    </div>
+    <div class="image-placeholder">【ギャラリー】</div>
+    <div class="hero-text">
+      <p>Memories in Photographs</p>
+      <h1>ギャラリー</h1>
+      <p class="hero-date">ふたりの日々から当日まで</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="gallery-grid">
+        <figure>
+          <div class="gallery-thumb">プロポーズの場所</div>
+          <figcaption>海辺の静かなプロポーズ。淡い光が印象的でした。</figcaption>
+        </figure>
+        <figure>
+          <div class="gallery-thumb">おふたりの笑顔</div>
+          <figcaption>ふざけあって笑い合う素顔のひととき。</figcaption>
+        </figure>
+        <figure>
+          <div class="gallery-thumb">会場コーディネート</div>
+          <figcaption>淡いピンクとゴールドでまとめた会場コーデ。</figcaption>
+        </figure>
+        <figure>
+          <div class="gallery-thumb">お花のディテール</div>
+          <figcaption>小花をあしらったブーケとテーブルフラワー。</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="index.html" class="panel-button">トップに戻る</a></p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.nav-menu');
+
+    hamburger.addEventListener('click', () => {
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('open');
+      menu.setAttribute('aria-hidden', String(expanded));
+    });
+  </script>
+</body>
+</html>
