@@ -1,0 +1,268 @@
+:root {
+  --accent: #d77a87;
+  --accent-soft: #fbe8ea;
+  --border: #f4e7e5;
+  --text: #1a0c0a;
+  --muted: #5e5250;
+  --shadow: 0 15px 35px rgba(13, 3, 0, 0.15);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Hiragino Kaku Gothic Pro", "Yu Gothic", "Meiryo", sans-serif;
+  background: linear-gradient(180deg, #fffdfb 0%, #f9f3ef 50%, #fff 100%);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+main,
+header,
+footer {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+header {
+  position: relative;
+  padding: 1.5rem 1.25rem 2rem;
+  background: linear-gradient(135deg, rgba(215, 122, 135, 0.15), rgba(255, 255, 255, 0));
+}
+
+.hero-nav {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.hamburger {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.hamburger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background-color: var(--accent);
+  border-radius: 999px;
+}
+
+.nav-menu {
+  position: absolute;
+  top: 56px;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  box-shadow: var(--shadow);
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 220px;
+  z-index: 2;
+}
+
+.nav-menu.open {
+  display: flex;
+}
+
+.nav-menu a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.nav-menu a:hover {
+  color: var(--accent);
+}
+
+.hero-text {
+  margin-top: 1.4rem;
+  text-align: center;
+}
+
+.hero-text p {
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.hero-text h1 {
+  margin: 0.35rem 0;
+  font-size: 1.9rem;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+}
+
+.hero-date {
+  font-weight: 600;
+}
+
+.hero-venue {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.image-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #7a7a7a;
+  margin-top: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+main {
+  padding: 0 0 2rem;
+}
+
+section {
+  padding: 1.75rem 1.25rem;
+  margin: 1.2rem 1rem 0;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 25px 50px rgba(245, 213, 213, 0.35);
+}
+
+section h2 {
+  margin: 0 0 0.9rem;
+  font-size: 1.4rem;
+  color: var(--accent);
+}
+
+.note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.menu-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.menu-list article {
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fff8f6, #fef7f2);
+  border: 1px solid var(--border);
+}
+
+.menu-list h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.menu-list p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.timeline-list li {
+  display: flex;
+  gap: 0.6rem;
+  font-weight: 600;
+  align-items: baseline;
+}
+
+.timeline-list span {
+  color: var(--accent);
+  font-size: 0.95rem;
+  min-width: 70px;
+}
+
+.access-list,
+.notes-list {
+  padding-left: 1rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
+footer {
+  margin-top: 1.4rem;
+  padding: 1.5rem 1rem 2.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+@media (min-width: 600px) {
+  body {
+    font-size: 16px;
+  }
+
+  main,
+  header,
+  footer {
+    padding: 0;
+  }
+
+  section {
+    margin: 1.6rem auto;
+    width: 420px;
+  }
+
+  .hero-nav {
+    justify-content: flex-end;
+  }
+
+  .nav-menu {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    gap: 1rem;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+  }
+
+  .hamburger {
+    display: none;
+  }
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>トモトモウェディング</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-nav">
+      <button class="hamburger" aria-label="メニューを開く" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav-menu" aria-hidden="true">
+        <a href="#greeting">ごあいさつ</a>
+        <a href="#seats">席次表</a>
+        <a href="#menu">コース料理</a>
+        <a href="#timeline">タイムライン</a>
+        <a href="#access">アクセス</a>
+        <a href="#notes">注意事項</a>
+      </nav>
+    </div>
+    <div class="image-placeholder">【メインビジュアル】</div>
+    <div class="hero-text">
+      <p>新郎　○○　○○</p>
+      <p>新婦　△△　△△</p>
+      <h1>◯◯ & △△ Wedding</h1>
+      <p class="hero-date">2025.11.23</p>
+      <p class="hero-venue">会場：ホテル○○</p>
+    </div>
+  </header>
+
+  <main>
+    <section id="greeting">
+      <h2>ごあいさつ</h2>
+      <p>このたびは私たちの結婚式にご参加いただき誠にありがとうございます。おふたりの大切な時間を一緒に過ごしていただけることをとても嬉しく思っています。</p>
+      <p>ご家族、ご友人の支えのおかげでここまで来られたことに感謝し、心を込めておもてなしさせていただきます。一日をゆっくり楽しんでくださいね。</p>
+      <p>これからも笑顔あふれる未来へ向かって歩む私たちに、どうぞ温かな祝福をよろしくお願いいたします。</p>
+    </section>
+
+    <section id="seats">
+      <h2>席次表</h2>
+      <div class="image-placeholder">【席次表イメージ】</div>
+      <p class="note">※ 実際の席次表は後日こちらに画像で差し替わります。</p>
+    </section>
+
+    <section id="menu">
+      <h2>コース料理</h2>
+      <div class="image-placeholder">【コース料理イメージ】</div>
+      <div class="menu-list">
+        <article>
+          <h3>前菜</h3>
+          <p>彩り豊かな季節の前菜盛り合わせ。口当たりの軽いムースと共に。</p>
+        </article>
+        <article>
+          <h3>スープ</h3>
+          <p>濃厚なブイヨンに季節の野菜をあわせた温かいスープ。</p>
+        </article>
+        <article>
+          <h3>魚料理</h3>
+          <p>鮮魚のポワレ、ハーブバターソースで上品に。</p>
+        </article>
+        <article>
+          <h3>肉料理</h3>
+          <p>特選牛のグリル、赤ワインソースと季節の根菜添え。</p>
+        </article>
+        <article>
+          <h3>デザート</h3>
+          <p>ウエディングケーキと季節のフルーツのプレート。</p>
+        </article>
+        <article>
+          <h3>ドリンク</h3>
+          <p>スパークリングワイン、オリジナルカクテル、ソフトドリンク各種。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <h2>本日の流れ</h2>
+      <ul class="timeline-list">
+        <li><span>13:00</span> ご来賓ご着席</li>
+        <li><span>13:30</span> 挙式</li>
+        <li><span>14:15</span> 披露宴開宴</li>
+        <li><span>15:30</span> ケーキセレモニー</li>
+        <li><span>16:00</span> 余興・ご歓談</li>
+        <li><span>17:30</span> お見送り</li>
+      </ul>
+    </section>
+
+    <section id="access">
+      <h2>アクセス</h2>
+      <p>〒123-4567 東京都中央区ウエディング通り1-2-3 ホテル○○</p>
+      <ul class="access-list">
+        <li>電車：東京駅より徒歩15分、または丸ノ内線「ウエディング駅」より徒歩7分</li>
+        <li>バス：都バス「ホテル○○前」下車すぐ</li>
+      </ul>
+    </section>
+
+    <section id="notes">
+      <h2>注意事項</h2>
+      <ul class="notes-list">
+        <li>写真撮影は他のゲストの邪魔にならないようご配慮ください。</li>
+        <li>アレルギーをお持ちの方は事前にスタッフへお知らせください。</li>
+        <li>喫煙は指定の喫煙所をご利用ください。</li>
+        <li>クロークは受付横にご用意しております。受付時にお預けください。</li>
+        <li>ご不明点があればスタッフまでお気軽にお声がけください。</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>本日はお越しいただきありがとうございます。</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.nav-menu');
+
+    hamburger.addEventListener('click', () => {
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('open');
+      menu.setAttribute('aria-hidden', String(expanded));
+    });
+  </script>
+</body>
+</html>
