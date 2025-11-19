@@ -10,7 +10,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://mkwork1006-wq.github.io/tomotomo-wedding/",
+  "homepage": "https://mkwork1006-wq.github.io/wedding/",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
