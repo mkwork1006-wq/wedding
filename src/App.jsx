@@ -1,96 +1,94 @@
 import { useState } from "react";
 
 const navLinks = [
-  { id: "hero", label: "トップ" },
-  { id: "profile", label: "プロフィール" },
-  { id: "menu-section", label: "メニュー" },
-  { id: "gallery", label: "ギャラリー" }
+  { id: "hero", label: "トップ", href: "#hero" },
+  { id: "seating", label: "席次表", href: "#seating" },
+  { id: "courses", label: "コースメニュー", href: "#courses" },
+  { id: "groom", label: "新郎プロフィール", href: "#groom" },
+  { id: "bride", label: "新婦プロフィール", href: "#bride" },
+  { id: "gallery", label: "ギャラリー", href: "#gallery" },
+  { id: "faq", label: "Q&A", href: "#faq" }
 ];
 
-const profileHighlights = [
+const seatingPlan = [
+  "玄関 / 受付スペース",
+  "Table 1~3：ご友人・恩師",
+  "Table 4~6：職場関係",
+  "親族・家族テーブル"
+];
+
+const courseMenu = [
+  "アミューズ：季節のアーティザンプレート",
+  "冷前菜：海の幸のゼリー寄せ",
+  "温前菜：フォアグラのポワレ",
+  "魚料理：真鯛のコンフィ",
+  "肉料理：和牛フィレのロースト",
+  "デザート：シトラスのクレームブリュレ"
+];
+
+const bioSections = [
   {
-    title: "コンセプト",
-    description:
-      "静かに光が踊り、余白が心地よいリズムを刻む空間。素材感は自然と調和するマットな仕上げで、肩肘張らず過ごせるウェルカムなムードです。"
+    id: "groom",
+    name: "新郎プロフィール",
+    details: [
+      "建築設計を志し、陰影と素材の関係を探求するクリエイター。",
+      "手紙や光の演出を通じて、自宅のような安心感を届けたいと願う。"
+    ]
   },
   {
-    title: "空間設計",
-    description:
-      "回廊のような導線と、天井から降る柔らかい光のラインが特徴。光の色温度を変えることで時間の移ろいを演出します。"
-  },
-  {
-    title: "サービス",
-    description:
-      "ご家族・ご友人のペースを最優先に考えた構成と、ミニマルな演出で余韻を残すおもてなしを。"
+    id: "bride",
+    name: "新婦プロフィール",
+    details: [
+      "洋菓子職人として世界を旅し、食と香りを紡ぐ表現者。",
+      "ゲストの時間に寄り添う甘さと、しずくのような繊細さを大切にする。"
+    ]
   }
-];
-
-const menuEntries = [
-  { label: "事業内容", href: "#menu-section" },
-  { label: "企業情報", href: "#profile" },
-  { label: "ニュース", href: "#gallery" },
-  { label: "IR情報", href: "#hero" },
-  { label: "サステナビリティ", href: "#hero" },
-  { label: "採用情報", href: "#profile" }
-];
-
-const menuHighlights = [
-  { title: "トップページ", description: "白とグレーを基調にしたヒーローで第一印象をコントロール。" },
-  { title: "プロフィール", description: "おふたりの軌跡と想いを静かに紡ぐセクション設計。" },
-  { title: "メニュー", description: "構成と進行、当日の流れを丁寧に記したページ。" },
-  { title: "ギャラリー", description: "光や質感、ゲストとの瞬間を残すビジュアルギャラリー。" }
 ];
 
 const galleryShots = [
   {
     title: "Morning Light",
-    description: "日の出のようなグラデーションを背景に、穏やかな笑顔を写した一枚。"
+    description: "朝のやわらかな光がふたりの笑顔を包む瞬間を捉えました。"
   },
   {
     title: "Architectural Calm",
-    description: "アーチと壁の陰影が静けさを際立たせ、緊張をほどく風景。"
+    description: "アーチと天井から差す光の陰影が静けさを紡ぐ一場面です。"
   },
   {
     title: "Evening Glow",
-    description: "キャンドルの光が踊るテーブルと、歓談するゲストの温かな輪郭。"
+    description: "キャンドルが揺らめくテーブルに、歓談するゲストの輪郭が浮かび上がる夜。"
   }
+];
+
+const faqs = [
+  { question: "ドレスコードはありますか？", answer: "フォーマル寄りの装いを推奨していますが、肩肘張らないリネン調のセットアップも歓迎です。" },
+  { question: "送迎はありますか？", answer: "希望者には最寄り駅からのシャトルをご案内いたします。事前にご相談ください。" },
+  { question: "アレルギー対応は可能ですか？", answer: "アレルギーや苦手食材は事前にご連絡いただければ個別にご用意します。" }
 ];
 
 const MenuPanel = ({ open, onClose }) => (
   <div
     className={`overflow-hidden transition-[max-height,padding] duration-300 ${
-      open ? "max-h-[440px] py-8" : "max-h-0 py-0"
+      open ? "max-h-[420px] py-6" : "max-h-0 py-0"
     }`}
   >
     <div
-      className={`w-full rounded-b-[28px] border border-[#d8d5d2] bg-[#042d2a] px-6 py-6 text-white/90 transition-colors duration-300 ${
-        open ? "shadow-[0_20px_60px_rgba(4,45,42,0.35)]" : "shadow-none"
+      className={`w-full border-b border-[#efeded] bg-white px-6 transition-shadow duration-300 ${
+        open ? "shadow-[0_20px_60px_rgba(0,0,0,0.08)]" : "shadow-none"
       }`}
     >
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase tracking-[0.5em] text-white/60">menu</p>
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex items-center gap-2 rounded-md border border-white/60 px-3 py-2 text-xs uppercase tracking-[0.4em]"
-        >
-          CLOSE
-          <span className="text-sm">✕</span>
-        </button>
-      </div>
-      <div className="mt-6 space-y-4 text-lg font-semibold">
-        {menuEntries.map((entry) => (
+      <nav className="flex flex-col gap-4 py-4 text-lg font-semibold text-[#1f1f1f]">
+        {navLinks.map(({ id, label, href }) => (
           <a
-            key={entry.label}
-            href={entry.href}
+            key={id}
+            href={href}
             onClick={onClose}
-            className="flex items-center justify-between border-b border-white/10 pb-3 transition hover:text-[#c2f0df]"
+            className="border-b border-[#f0f0f0] pb-3 transition hover:text-[#a1125a]"
           >
-            <span>{entry.label}</span>
-            <span className="text-xs text-white/60">→</span>
+            {label}
           </a>
         ))}
-      </div>
+      </nav>
     </div>
   </div>
 );
@@ -100,7 +98,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white text-[#1f1f1f]">
-      <header className="sticky top-0 z-30 border-b border-[#efeded] bg-white/90 px-6 py-4 backdrop-blur md:px-10">
+      <header className="sticky top-0 z-30 border-b border-[#efeded] bg-white backdrop-blur px-6 py-4 md:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.6em] text-[#7a7a7a]">tomotomo wedding</p>
@@ -115,13 +113,27 @@ function App() {
           </nav>
           <button
             type="button"
-            className="relative flex h-12 w-32 items-center justify-center border border-[#ded7d1] text-sm font-semibold uppercase tracking-[0.35em] text-[#1f1f1f] transition hover:border-[#a1125a] md:hidden"
+            className="relative flex h-12 w-12 items-center justify-center md:hidden"
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-expanded={menuOpen}
             aria-label="ナビゲーションを開閉"
           >
-            <span className="absolute right-3">≡</span>
-            MENU
+            <span className="sr-only">メニュー</span>
+            <span
+              className={`absolute h-[2px] w-6 bg-[#1f1f1f] transition duration-300 ${
+                menuOpen ? "translate-y-0 rotate-45" : "-translate-y-3"
+              }`}
+            />
+            <span
+              className={`absolute h-[2px] w-6 bg-[#1f1f1f] transition duration-300 ${
+                menuOpen ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`absolute h-[2px] w-6 bg-[#1f1f1f] transition duration-300 ${
+                menuOpen ? "translate-y-0 -rotate-45" : "translate-y-3"
+              }`}
+            />
           </button>
         </div>
         <MenuPanel open={menuOpen} onClose={() => setMenuOpen(false)} />
@@ -132,66 +144,79 @@ function App() {
           <div className="space-y-6">
             <p className="text-xs uppercase tracking-[0.4em] text-[#8a8a8a]">tomotomo</p>
             <h1 className="text-4xl font-semibold leading-tight text-[#1f1f1f] md:text-5xl">
-              清潔感を纏った光と余白が紡ぐウェディングストーリー。
+              清潔感のある白に、光と時間の余韻をのせたWedding Page。
             </h1>
             <p className="text-base text-[#4c4c4c]">
-              ガラス越しに漂うリネンの白、木の温度、天井から舞い降りる柔らかな光。トップページではその余韻を先に感じられるよう、シンプルな構図を採用しました。
+              入口から続く余白に沿ってストーリーを紡ぎ、ゲストが自分らしくいられる祝福をデザインします。
             </p>
-            <div className="flex flex-wrap gap-3">
-              <button className="rounded-full border border-[#1f1f1f] px-6 py-3 text-xs font-semibold uppercase tracking-[0.5em] transition hover:bg-[#f8f4f2]">
-                参加する
-              </button>
-              <span className="self-center text-xs uppercase tracking-[0.5em] text-[#8a8a8a]">
-                プロフィールへ
-              </span>
-            </div>
           </div>
           <div className="space-y-3 rounded-[26px] border border-[#efeded] bg-[#fafafa] p-6 shadow-sm">
             <p className="text-xs uppercase tracking-[0.4em] text-[#a1125a]">memory</p>
             <h2 className="text-2xl font-semibold text-[#1f1f1f]">しなやかなヴォールト</h2>
             <p className="text-sm text-[#4c4c4c]">
-              丸く柔らかなラインが空間を包み込み、ゲストの視線を自然と流すデザインです。透明感のある素材で、やさしい反射をつくり出します。
+              柔らかなラインで構成された空間は、ガラス越しの光を取り入れて心地よい流れをつくります。
             </p>
-            <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.4em] text-[#a1125a]">
-              <span className="rounded-full border border-[#f2d7d2] px-3 py-1">柔らかな光</span>
-              <span className="rounded-full border border-[#f2d7d2] px-3 py-1">クラシックピアノ</span>
-            </div>
           </div>
         </section>
 
-        <section id="profile" className="space-y-6">
+        <section id="seating" className="space-y-6">
           <div className="flex items-center gap-4">
             <span className="h-px w-24 bg-[#dad5d2]" />
-            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">profile</p>
+            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">seating</p>
           </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            {profileHighlights.map(({ title, description }) => (
-              <article
-                key={title}
-                className="space-y-3 rounded-[20px] border border-[#f0eeea] bg-white p-5 shadow-sm"
-              >
-                <p className="text-sm font-semibold tracking-[0.35em] text-[#a1125a]">{title}</p>
-                <p className="text-sm text-[#4c4c4c]">{description}</p>
-              </article>
+          <div className="flex flex-col gap-2 text-sm text-[#4c4c4c]">
+            {seatingPlan.map((item) => (
+              <p key={item} className="rounded-[18px] border border-[#f0f0f0] bg-white/80 p-3">
+                {item}
+              </p>
             ))}
           </div>
         </section>
 
-        <section id="menu-section" className="space-y-6">
+        <section id="courses" className="space-y-4">
           <div className="flex items-center gap-4">
             <span className="h-px w-24 bg-[#dad5d2]" />
-            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">menu</p>
+            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">courses</p>
           </div>
-          <div className="grid gap-5 md:grid-cols-2">
-            {menuHighlights.map(({ title, description }) => (
-              <article
-                key={title}
-                className="space-y-3 rounded-[24px] border border-[#efeded] bg-white p-6 shadow-sm"
+          <div className="grid gap-3 md:grid-cols-2">
+            {courseMenu.map((course) => (
+              <div
+                key={course}
+                className="rounded-[24px] border border-[#efeded] bg-white p-5 text-sm text-[#4c4c4c] shadow-sm"
               >
-                <p className="text-sm uppercase tracking-[0.4em] text-[#a1125a]">{title}</p>
-                <p className="text-base text-[#4c4c4c]">{description}</p>
-              </article>
+                {course}
+              </div>
             ))}
+          </div>
+        </section>
+
+        <section id="groom" className="space-y-6">
+          <div className="flex items-center gap-4">
+            <span className="h-px w-24 bg-[#dad5d2]" />
+            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">groom</p>
+          </div>
+          <div className="space-y-3 rounded-[22px] border border-[#efeded] bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-[#1f1f1f]">新郎プロフィール</h3>
+            <ul className="list-disc space-y-2 pl-5 text-sm text-[#4c4c4c]">
+              {bioSections.find((item) => item.id === "groom")?.details.map((text) => (
+                <li key={text}>{text}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section id="bride" className="space-y-6">
+          <div className="flex items-center gap-4">
+            <span className="h-px w-24 bg-[#dad5d2]" />
+            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">bride</p>
+          </div>
+          <div className="space-y-3 rounded-[22px] border border-[#efeded] bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-[#1f1f1f]">新婦プロフィール</h3>
+            <ul className="list-disc space-y-2 pl-5 text-sm text-[#4c4c4c]">
+              {bioSections.find((item) => item.id === "bride")?.details.map((text) => (
+                <li key={text}>{text}</li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -209,6 +234,21 @@ function App() {
                 <figcaption className="text-sm uppercase tracking-[0.45em] text-[#f1f1f1]">{title}</figcaption>
                 <p className="mt-3 text-sm leading-relaxed text-white/80">{description}</p>
               </figure>
+            ))}
+          </div>
+        </section>
+
+        <section id="faq" className="space-y-6">
+          <div className="flex items-center gap-4">
+            <span className="h-px w-24 bg-[#dad5d2]" />
+            <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">Q&A</p>
+          </div>
+          <div className="space-y-4">
+            {faqs.map(({ question, answer }) => (
+              <article key={question} className="rounded-[22px] border border-[#efeded] bg-white p-5 shadow-sm">
+                <p className="text-sm font-semibold text-[#1f1f1f]">{question}</p>
+                <p className="mt-2 text-sm text-[#4c4c4c]">{answer}</p>
+              </article>
             ))}
           </div>
         </section>
