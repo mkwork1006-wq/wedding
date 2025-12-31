@@ -2,20 +2,20 @@ import { useState } from "react";
 import TopPage from "./pages/TopPage";
 import SeatingPage from "./pages/SeatingPage";
 import CoursesPage from "./pages/CoursesPage";
-import GroomPage from "./pages/GroomPage";
-import BridePage from "./pages/BridePage";
+import ProfilePage from "./pages/ProfilePage";
 import GalleryPage from "./pages/GalleryPage";
 import FaqPage from "./pages/FaqPage";
+import TempPage from "./pages/TempPage";
 import { Pill } from "./components/ui";
 
 const pages = [
   { id: "hero", label: "トップ", component: TopPage },
   { id: "seating", label: "席次表", component: SeatingPage },
   { id: "courses", label: "コースメニュー", component: CoursesPage },
-  { id: "groom", label: "新郎プロフィール", component: GroomPage },
-  { id: "bride", label: "新婦プロフィール", component: BridePage },
+  { id: "profile", label: "プロフィール", component: ProfilePage },
   { id: "gallery", label: "ギャラリー", component: GalleryPage },
-  { id: "faq", label: "ご質問", component: FaqPage }
+  { id: "faq", label: "ご質問", component: FaqPage },
+  { id: "temp", label: "仮", component: TempPage }
 ];
 
 const MenuPanel = ({ open, onSelect }) => (
@@ -119,7 +119,7 @@ function App() {
         <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(0,20,137,0.05),transparent_50%)]" />
         <div className="relative mx-auto max-w-6xl space-y-12 px-6 pb-14 pt-10 md:px-10">
           <div key={activePage} className="animate-fade">
-            <ActivePage />
+            <ActivePage onNavigate={handleSelect} />
           </div>
         </div>
       </main>

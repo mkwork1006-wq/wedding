@@ -51,6 +51,14 @@ body {
     animation: galleryReveal 1s ease forwards;
   }
 
+  .animate-arrow-in-right {
+    animation: arrowInRight 0.45s ease forwards;
+  }
+
+  .animate-arrow-in-left {
+    animation: arrowInLeft 0.45s ease forwards;
+  }
+
   .animate-hero-zoom {
     animation: heroZoom 2s ease-out forwards;
     transform-origin: bottom center;
@@ -81,6 +89,28 @@ body {
     }
   }
 
+  @keyframes arrowInRight {
+    from {
+      opacity: 0;
+      margin-right: 10px;
+    }
+    to {
+      opacity: 1;
+      margin-right: 0;
+    }
+  }
+
+  @keyframes arrowInLeft {
+    from {
+      opacity: 0;
+      margin-left: 10px;
+    }
+    to {
+      opacity: 1;
+      margin-left: 0;
+    }
+  }
+
   @keyframes galleryReveal {
     from {
       opacity: 0;
@@ -96,7 +126,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-fade,
   .animate-gallery-reveal,
-  .animate-hero-zoom {
+  .animate-hero-zoom,
+  .animate-arrow-in-right,
+  .animate-arrow-in-left {
     animation: none;
   }
 }

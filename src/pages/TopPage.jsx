@@ -9,7 +9,7 @@ const topImages = Object.values(
   })
 );
 
-function TopPage() {
+function TopPage({ onNavigate }) {
   const heroImage = useMemo(() => {
     if (!topImages.length) {
       return "";
@@ -18,6 +18,14 @@ function TopPage() {
     return topImages[index];
   }, []);
   const isTopB = heroImage.includes("TOP_B");
+  const quickLinks = [
+    { id: "seating", label: "席次表" },
+    { id: "courses", label: "コースメニュー" },
+    { id: "profile", label: "プロフィール" },
+    { id: "gallery", label: "ギャラリー" },
+    { id: "faq", label: "ご質問" },
+    { id: "temp", label: "仮" }
+  ];
 
   return (
     <section className="space-y-10" id="hero">
@@ -44,6 +52,21 @@ function TopPage() {
           </div>
         </div>
       </SurfaceCard>
+      <p className="text-center text-sm text-[color:var(--muted)] md:text-base">
+        ご列席の皆さまへ、本日心からの感謝を込めて
+      </p>
+      <div className="mx-auto grid max-w-3xl grid-cols-3 gap-3 sm:gap-4">
+        {quickLinks.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onNavigate?.(id)}
+            className="group flex min-h-[64px] items-center justify-center rounded-2xl border border-[#efeded] bg-white px-3 py-3 text-[13px] font-semibold text-[color:var(--ink)] shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] md:text-sm"
+          >
+            <span className="text-center leading-tight">{label}</span>
+          </button>
+        ))}
+      </div>
       <div className="grid gap-8 md:grid-cols-[1.25fr_0.85fr] md:items-start">
         <div className="space-y-5">
           <p className="text-xs uppercase tracking-[0.4em] text-[color:var(--subtle)]">tomotomo</p>
