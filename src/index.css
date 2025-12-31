@@ -6,9 +6,10 @@
 
 :root {
   color-scheme: light;
-  --accent: #a1125a;
-  --ink: #1f1f1f;
-  --muted: #4c4c4c;
+  --accent: #0b2fd6;
+  --ink: #001489;
+  --muted: #1a2b86;
+  --subtle: #5d6fb3;
 }
 
 * {
@@ -19,7 +20,7 @@ body {
   font-family: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   background-color: #ffffff;
-  color: #1f1f1f;
+  color: var(--ink);
   line-height: 1.7;
   letter-spacing: 0.01em;
   overscroll-behavior: none;
@@ -32,18 +33,32 @@ body {
 }
 
 ::selection {
-  background-color: rgba(161, 18, 90, 0.12);
-  color: #1f1f1f;
+  background-color: rgba(11, 47, 214, 0.12);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid rgba(161, 18, 90, 0.7);
+  outline: 2px solid rgba(11, 47, 214, 0.7);
   outline-offset: 3px;
 }
 
 @layer utilities {
   .animate-fade {
     animation: fadeInUp 0.32s ease;
+  }
+
+  .animate-gallery-reveal {
+    animation: galleryReveal 1s ease forwards;
+  }
+
+  .animate-hero-zoom {
+    animation: heroZoom 2s ease-out forwards;
+    transform-origin: bottom center;
+    will-change: transform;
+  }
+
+  .object-bottom-shift {
+    object-position: center calc(100% + 25px);
   }
 
   @keyframes fadeInUp {
@@ -55,5 +70,33 @@ body {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  @keyframes heroZoom {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes galleryReveal {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade,
+  .animate-gallery-reveal,
+  .animate-hero-zoom {
+    animation: none;
   }
 }

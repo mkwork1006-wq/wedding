@@ -10,8 +10,8 @@ function FaqPage() {
             key={question}
             className="p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]"
           >
-            <p className="text-sm font-semibold text-[#1f1f1f]">{question}</p>
-            <p className="mt-2 text-sm text-[#4c4c4c]">{answer}</p>
+            <p className="text-sm font-semibold text-[color:var(--ink)]">{question}</p>
+            <p className="mt-2 text-sm text-[color:var(--muted)]">{answer}</p>
           </SurfaceCard>
         ))}
       </div>

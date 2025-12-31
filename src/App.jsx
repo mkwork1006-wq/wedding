@@ -29,13 +29,13 @@ const MenuPanel = ({ open, onSelect }) => (
         open ? "shadow-[0_20px_60px_rgba(0,0,0,0.08)]" : "shadow-none"
       }`}
     >
-      <nav className="flex flex-col gap-4 py-4 text-lg font-semibold text-[#1f1f1f]">
+      <nav className="flex flex-col gap-4 py-4 text-lg font-semibold text-[color:var(--ink)]">
         {pages.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => onSelect(id)}
-            className="border-b border-[#f0f0f0] pb-3 text-left transition hover:text-[#a1125a]"
+            className="border-b border-[#f0f0f0] pb-3 text-left transition hover:text-[color:var(--accent)]"
           >
             {label}
           </button>
@@ -57,11 +57,11 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#1f1f1f]">
+    <div className="min-h-screen bg-white text-[color:var(--ink)]">
       <header className="sticky top-0 z-30 border-b border-[#efeded] bg-white/90 px-6 py-4 backdrop-blur md:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <div className="space-y-1">
-            <p className="text-xs uppercase tracking-[0.6em] text-[#7a7a7a]">tomotomo wedding</p>
+            <p className="text-xs uppercase tracking-[0.6em] text-[color:var(--subtle)]">tomotomo wedding</p>
             <p className="text-lg font-semibold">光と余白でつなぐ一日</p>
             <div className="flex flex-wrap gap-2 md:hidden">
               <Pill>2025.11.23</Pill>
@@ -75,7 +75,7 @@ function App() {
                 type="button"
                 onClick={() => handleSelect(id)}
                 className={`transition-colors ${
-                  activePage === id ? "text-[#a1125a]" : "text-[#1f1f1f]"
+                  activePage === id ? "text-[color:var(--accent)]" : "text-[color:var(--ink)]"
                 }`}
               >
                 {label}
@@ -95,17 +95,17 @@ function App() {
           >
             <span className="sr-only">メニュー</span>
             <span
-              className={`absolute h-[2px] w-6 bg-[#1f1f1f] transition duration-300 ${
+              className={`absolute h-[2px] w-6 bg-[var(--ink)] transition duration-300 ${
                 menuOpen ? "translate-y-0 rotate-45" : "-translate-y-3"
               }`}
             />
             <span
-              className={`absolute h-[2px] w-6 bg-[#1f1f1f] transition duration-300 ${
+              className={`absolute h-[2px] w-6 bg-[var(--ink)] transition duration-300 ${
                 menuOpen ? "opacity-0" : ""
               }`}
             />
             <span
-              className={`absolute h-[2px] w-6 bg-[#1f1f1f] transition duration-300 ${
+              className={`absolute h-[2px] w-6 bg-[var(--ink)] transition duration-300 ${
                 menuOpen ? "translate-y-0 -rotate-45" : "translate-y-3"
               }`}
             />
@@ -115,8 +115,8 @@ function App() {
       </header>
 
       <main className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(161,18,90,0.08),transparent_55%)]" />
-        <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(31,31,31,0.05),transparent_50%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(11,47,214,0.08),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(0,20,137,0.05),transparent_50%)]" />
         <div className="relative mx-auto max-w-6xl space-y-12 px-6 pb-14 pt-10 md:px-10">
           <div key={activePage} className="animate-fade">
             <ActivePage />

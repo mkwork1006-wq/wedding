@@ -88,21 +88,6 @@ export const profiles = {
   }
 };
 
-export const galleryShots = [
-  {
-    title: "モーニングライト",
-    description: "朝のやわらかな光がふたりの笑顔を包む瞬間を捉えました。"
-  },
-  {
-    title: "建築の静けさ",
-    description: "アーチと天井から差す光の陰影が静けさを紡ぐ一場面です。"
-  },
-  {
-    title: "イブニンググロウ",
-    description: "キャンドルが揺らめくテーブルに、歓談するゲストの輪郭が浮かび上がる夜。"
-  }
-];
-
 export const faqs = [
   {
     question: "ドレスコードはありますか？",

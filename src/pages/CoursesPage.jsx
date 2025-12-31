@@ -16,11 +16,11 @@ function CoursesPage() {
             className="p-5 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]"
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold text-[#1f1f1f]">{title}</p>
-              <span className="text-[10px] tracking-[0.32em] text-[#7a7a7a]">コース</span>
+              <p className="text-sm font-semibold text-[color:var(--ink)]">{title}</p>
+              <span className="text-[10px] tracking-[0.32em] text-[color:var(--subtle)]">コース</span>
             </div>
-            <p className="mt-1 text-sm text-[#3f3f3f]">{detail}</p>
-            <p className="mt-1 text-xs text-[#4c4c4c]">{note}</p>
+            <p className="mt-1 text-sm text-[color:var(--muted)]">{detail}</p>
+            <p className="mt-1 text-xs text-[color:var(--muted)]">{note}</p>
           </SurfaceCard>
         ))}
       </div>

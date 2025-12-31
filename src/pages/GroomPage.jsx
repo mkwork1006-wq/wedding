@@ -6,7 +6,7 @@ function GroomPage() {
   return (
     <SectionShell id="groom" eyebrow="新郎" title={profile.name} description={profile.headline}>
       <SurfaceCard className="p-6 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]">
-        <ul className="list-disc space-y-2 pl-5 text-sm text-[#4c4c4c]">
+        <ul className="list-disc space-y-2 pl-5 text-sm text-[color:var(--muted)]">
           {profile.details.map((text) => (
             <li key={text}>{text}</li>
           ))}

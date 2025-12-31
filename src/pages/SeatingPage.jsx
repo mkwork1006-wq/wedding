@@ -16,8 +16,8 @@ function SeatingPage() {
             tone="muted"
             className="p-4 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]"
           >
-            <p className="text-sm font-semibold text-[#1f1f1f]">{title}</p>
-            <p className="mt-2 text-xs text-[#4c4c4c]">{note}</p>
+            <p className="text-sm font-semibold text-[color:var(--ink)]">{title}</p>
+            <p className="mt-2 text-xs text-[color:var(--muted)]">{note}</p>
           </SurfaceCard>
         ))}
       </div>

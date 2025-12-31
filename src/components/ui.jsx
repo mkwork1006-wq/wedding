@@ -3,14 +3,14 @@ export function SectionShell({ id, eyebrow, title, description, children }) {
     <section id={id} className="space-y-5">
       <div className="space-y-2">
         {eyebrow ? (
-          <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.48em] text-[#7a7a7a]">
+          <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.48em] text-[color:var(--subtle)]">
             <span className="h-px w-12 bg-[#e8e4e2] sm:w-20" />
             <span>{eyebrow}</span>
             <span className="hidden h-px flex-1 max-w-[120px] bg-[#e8e4e2] sm:block" />
           </div>
         ) : null}
-        {title ? <h2 className="text-xl font-semibold text-[#1f1f1f] md:text-2xl">{title}</h2> : null}
-        {description ? <p className="text-sm text-[#4c4c4c]">{description}</p> : null}
+        {title ? <h2 className="text-xl font-semibold text-[color:var(--ink)] md:text-2xl">{title}</h2> : null}
+        {description ? <p className="text-sm text-[color:var(--muted)]">{description}</p> : null}
       </div>
       {children}
     </section>
@@ -36,7 +36,7 @@ export function SurfaceCard({ tone = "plain", className = "", children }) {
 
 export function Pill({ children }) {
   return (
-    <span className="rounded-full border border-[#e9e6e3] bg-white px-3 py-1 text-xs font-medium text-[#3d3d3d] shadow-sm">
+    <span className="rounded-full border border-[#e9e6e3] bg-white px-3 py-1 text-xs font-medium text-[color:var(--muted)] shadow-sm">
       {children}
     </span>
   );
