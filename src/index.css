@@ -6,6 +6,9 @@
 
 :root {
   color-scheme: light;
+  --accent: #a1125a;
+  --ink: #1f1f1f;
+  --muted: #4c4c4c;
 }
 
 * {
@@ -17,6 +20,8 @@ body {
   min-height: 100vh;
   background-color: #ffffff;
   color: #1f1f1f;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
   overscroll-behavior: none;
 }
 
@@ -24,4 +29,31 @@ body {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   box-shadow: 0 15px 40px rgba(35, 35, 35, 0.1);
+}
+
+::selection {
+  background-color: rgba(161, 18, 90, 0.12);
+  color: #1f1f1f;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(161, 18, 90, 0.7);
+  outline-offset: 3px;
+}
+
+@layer utilities {
+  .animate-fade {
+    animation: fadeInUp 0.32s ease;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

@@ -1,22 +1,23 @@
-import { bioSections } from "../data/content";
+import { profiles } from "../data/content";
+import { Pill, SectionShell, SurfaceCard } from "../components/ui";
 
 function GroomPage() {
-  const section = bioSections.find((item) => item.id === "groom");
+  const profile = profiles.groom;
   return (
-    <section className="space-y-6" id="groom">
-      <div className="flex items-center gap-4">
-        <span className="h-px w-24 bg-[#dad5d2]" />
-        <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">groom</p>
-      </div>
-      <div className="space-y-3 rounded-[22px] border border-[#efeded] bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-[#1f1f1f]">{section?.name}</h3>
+    <SectionShell id="groom" eyebrow="新郎" title={profile.name} description={profile.headline}>
+      <SurfaceCard className="p-6 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]">
         <ul className="list-disc space-y-2 pl-5 text-sm text-[#4c4c4c]">
-          {section?.details.map((text) => (
+          {profile.details.map((text) => (
             <li key={text}>{text}</li>
           ))}
         </ul>
-      </div>
-    </section>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {profile.tags.map((tag) => (
+            <Pill key={tag}>{tag}</Pill>
+          ))}
+        </div>
+      </SurfaceCard>
+    </SectionShell>
   );
 }
 

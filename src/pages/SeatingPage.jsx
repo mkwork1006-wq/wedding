@@ -1,20 +1,27 @@
 import { seatingPlan } from "../data/content";
+import { SectionShell, SurfaceCard } from "../components/ui";
 
 function SeatingPage() {
   return (
-    <section className="space-y-6" id="seating">
-      <div className="flex items-center gap-4">
-        <span className="h-px w-24 bg-[#dad5d2]" />
-        <p className="text-xs uppercase tracking-[0.5em] text-[#7a7a7a]">seating</p>
-      </div>
-      <div className="flex flex-col gap-2 text-sm text-[#4c4c4c]">
-        {seatingPlan.map((item) => (
-          <p key={item} className="rounded-[18px] border border-[#f0f0f0] bg-white/80 p-3">
-            {item}
-          </p>
+    <SectionShell
+      id="seating"
+      eyebrow="席次"
+      title="席次表"
+      description="入口からご家族席までの動線をコンパクトにまとめました。"
+    >
+      <div className="grid gap-3 md:grid-cols-2">
+        {seatingPlan.map(({ title, note }) => (
+          <SurfaceCard
+            key={title}
+            tone="muted"
+            className="p-4 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]"
+          >
+            <p className="text-sm font-semibold text-[#1f1f1f]">{title}</p>
+            <p className="mt-2 text-xs text-[#4c4c4c]">{note}</p>
+          </SurfaceCard>
         ))}
       </div>
-    </section>
+    </SectionShell>
   );
 }
 
