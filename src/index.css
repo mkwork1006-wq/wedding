@@ -17,6 +17,7 @@
 }
 
 body {
+  margin: 0;
   font-family: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
   background-color: #ffffff;
@@ -59,16 +60,6 @@ body {
     animation: arrowInLeft 0.45s ease forwards;
   }
 
-  .animate-hero-zoom {
-    animation: heroZoom 2s ease-out forwards;
-    transform-origin: bottom center;
-    will-change: transform;
-  }
-
-  .object-bottom-shift {
-    object-position: center calc(100% + 25px);
-  }
-
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -77,15 +68,6 @@ body {
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  @keyframes heroZoom {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(1.05);
     }
   }
 
@@ -126,7 +108,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-fade,
   .animate-gallery-reveal,
-  .animate-hero-zoom,
   .animate-arrow-in-right,
   .animate-arrow-in-left {
     animation: none;

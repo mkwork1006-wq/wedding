@@ -1,70 +1,134 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { heroHighlights } from "../data/content";
 import { Pill, SurfaceCard } from "../components/ui";
 
-const topImages = Object.values(
+const topImages = Object.entries(
   import.meta.glob("../assets/images/top/TOP_*.*", {
     eager: true,
     import: "default"
   })
-);
+)
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
+  .map(([, src]) => src);
+const heroSlides = topImages;
 
 function TopPage({ onNavigate }) {
-  const heroImage = useMemo(() => {
-    if (!topImages.length) {
-      return "";
+  const [activeIndex, setActiveIndex] = useState(() => {
+    if (!heroSlides.length) {
+      return 0;
     }
-    const index = Math.floor(Math.random() * topImages.length);
-    return topImages[index];
-  }, []);
-  const isTopB = heroImage.includes("TOP_B");
+    return Math.floor(Math.random() * heroSlides.length);
+  });
+  const [isPaused, setIsPaused] = useState(false);
+  const totalSlides = heroSlides.length;
   const quickLinks = [
-    { id: "seating", label: "席次表" },
-    { id: "courses", label: "コースメニュー" },
-    { id: "profile", label: "プロフィール" },
-    { id: "gallery", label: "ギャラリー" },
-    { id: "faq", label: "ご質問" },
-    { id: "temp", label: "仮" }
+    { id: "seating", label: "座席表", image: topImages[0] ?? null },
+    { id: "courses", label: "コース料理", image: topImages[1] ?? topImages[0] ?? null },
+    { id: "profile", label: "プロフィール", image: topImages[2] ?? topImages[0] ?? null },
+    { id: "gallery", label: "ギャラリー", image: topImages[3] ?? topImages[0] ?? null }
   ];
+
+  useEffect(() => {
+    if (totalSlides <= 1 || isPaused) {
+      return undefined;
+    }
+    const timer = window.setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % totalSlides);
+    }, 6500);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, isPaused, totalSlides]);
 
   return (
     <section className="space-y-10" id="hero">
       <SurfaceCard
         tone="plain"
-        className="relative left-1/2 w-screen -translate-x-1/2 -mt-10 overflow-hidden rounded-none p-0 shadow-[0_26px_70px_rgba(10,28,60,0.12)]"
+        className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden rounded-none !border-0 p-0 !shadow-none"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocusCapture={() => setIsPaused(true)}
+        onBlurCapture={() => setIsPaused(false)}
       >
-        {heroImage ? (
-          <img
-            src={heroImage}
-            alt="トップビジュアル"
-            className="h-[570px] w-full object-cover object-bottom-shift animate-hero-zoom md:h-[670px]"
-            style={isTopB ? { objectPosition: "center calc(100% + 75px)" } : undefined}
-          />
+        {totalSlides ? (
+          <div
+            className="relative h-[570px] w-full md:h-[670px]"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="トップビジュアルのカルーセル"
+          >
+            {heroSlides.map((slide, index) => (
+              <img
+                key={`${slide}-${index}`}
+                src={slide}
+                alt={`トップビジュアル ${index + 1}`}
+                className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-1000 ${
+                  index === activeIndex ? "opacity-100" : "opacity-0"
+                }`}
+                aria-hidden={index !== activeIndex}
+              />
+            ))}
+            <div className="pointer-events-none absolute left-6 top-1/2 z-20 -translate-y-1/2 md:left-10">
+              <p className="origin-center rotate-180 font-['Noto_Sans_JP'] text-[34px] font-semibold leading-none tracking-[0.04em] text-[#ff3a2d] [writing-mode:vertical-rl] [text-orientation:mixed]">
+                Welcome to our Wedding
+              </p>
+            </div>
+          </div>
         ) : (
           <div className="h-[570px] w-full bg-[#f2f4f8] md:h-[670px]" />
         )}
-        <div className="pointer-events-none absolute inset-x-0 -bottom-[2px] h-[10px] bg-gradient-to-t from-white to-transparent" />
-        <div className="absolute inset-0 flex items-start justify-end p-6 md:p-10">
-          <div className="max-w-[240px] text-right font-['Noto_Sans_JP'] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)] md:max-w-sm">
-            <p className="text-xs uppercase tracking-[0.6em]">Wedding Atelier</p>
-            <p className="mt-6 text-3xl font-semibold leading-tight md:text-5xl">Discover the light</p>
-            <p className="mt-2 text-2xl font-semibold md:text-4xl">and awaken your vow.</p>
+        {totalSlides > 1 ? (
+          <div className="relative z-20 flex items-center justify-center gap-2 bg-white/95 py-5">
+            {heroSlides.map((slide, index) => (
+              <button
+                key={`${slide}-${index}`}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                  index === activeIndex ? "bg-[color:var(--accent)]" : "bg-[#cfd4e4] md:hover:bg-[color:var(--accent)]"
+                }`}
+                aria-label={`スライド ${index + 1}へ`}
+                aria-current={index === activeIndex ? "true" : undefined}
+              />
+            ))}
           </div>
-        </div>
+        ) : null}
       </SurfaceCard>
-      <p className="text-center text-sm text-[color:var(--muted)] md:text-base">
-        ご列席の皆さまへ、本日心からの感謝を込めて
-      </p>
-      <div className="mx-auto grid max-w-3xl grid-cols-3 gap-3 sm:gap-4">
-        {quickLinks.map(({ id, label }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onNavigate?.(id)}
-            className="group flex min-h-[64px] items-center justify-center rounded-2xl border border-[#efeded] bg-white px-3 py-3 text-[13px] font-semibold text-[color:var(--ink)] shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] md:text-sm"
-          >
-            <span className="text-center leading-tight">{label}</span>
-          </button>
+      <div className="space-y-3 text-center">
+        <p className="mb-2 text-5xl font-semibold leading-none text-[color:var(--ink)] md:text-6xl">03/29</p>
+        <p className="mx-auto max-w-4xl text-sm text-[color:var(--muted)] md:text-base">
+          本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。このサイトでは座席表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
+        </p>
+      </div>
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
+        {quickLinks.map(({ id, label, image }) => (
+          <div key={id} className="flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onNavigate?.(id)}
+              className="group w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+              aria-label={`${label}へ`}
+            >
+              <div className="aspect-square overflow-hidden rounded-2xl border border-[#efeded] bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5 group-hover:border-[color:var(--accent)]">
+                {image ? (
+                  <img
+                    src={image}
+                    alt={`${label}のイメージ`}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-[#f4f5f8]" />
+                )}
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate?.(id)}
+              className="text-sm font-semibold text-[color:var(--ink)] underline decoration-[1.5px] underline-offset-4 transition hover:text-[color:var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+              aria-label={`${label}へ`}
+            >
+              {label}
+            </button>
+          </div>
         ))}
       </div>
       <div className="grid gap-8 md:grid-cols-[1.25fr_0.85fr] md:items-start">
