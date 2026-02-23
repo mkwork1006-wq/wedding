@@ -10,6 +10,20 @@ const topImages = Object.entries(
 )
   .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
   .map(([, src]) => src);
+
+const buttonImages = Object.entries(
+  import.meta.glob("../assets/images/buttons/*.png", {
+    eager: true,
+    import: "default"
+  })
+).reduce((accumulator, [path, src]) => {
+  const filename = path.split("/").pop();
+  if (filename) {
+    accumulator[filename] = src;
+  }
+  return accumulator;
+}, {});
+
 const heroSlides = topImages;
 
 function TopPage({ onNavigate }) {
@@ -22,10 +36,10 @@ function TopPage({ onNavigate }) {
   const [isPaused, setIsPaused] = useState(false);
   const totalSlides = heroSlides.length;
   const quickLinks = [
-    { id: "seating", label: "座席表", image: topImages[0] ?? null },
-    { id: "courses", label: "コース料理", image: topImages[1] ?? topImages[0] ?? null },
-    { id: "profile", label: "プロフィール", image: topImages[2] ?? topImages[0] ?? null },
-    { id: "gallery", label: "ギャラリー", image: topImages[3] ?? topImages[0] ?? null }
+    { id: "seating", label: "座席表", image: buttonImages["zasakihyou_button.png"] ?? null },
+    { id: "courses", label: "コース料理", image: buttonImages["cooking_button.png"] ?? null },
+    { id: "profile", label: "プロフィール", image: buttonImages["profile_button.png"] ?? null },
+    { id: "gallery", label: "ギャラリー", image: buttonImages["gallery_button.png"] ?? null }
   ];
 
   useEffect(() => {
@@ -116,7 +130,9 @@ function TopPage({ onNavigate }) {
                     loading="lazy"
                   />
                 ) : (
-                  <div className="h-full w-full bg-[#f4f5f8]" />
+                  <div className="flex h-full w-full items-center justify-center bg-[#f4f5f8]">
+                    <span className="text-xs font-medium text-[color:var(--subtle)]">画像準備中</span>
+                  </div>
                 )}
               </div>
             </button>
