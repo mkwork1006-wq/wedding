@@ -6,7 +6,6 @@ import ProfilePage from "./pages/ProfilePage";
 import GalleryPage from "./pages/GalleryPage";
 import FaqPage from "./pages/FaqPage";
 import TempPage from "./pages/TempPage";
-import { Pill } from "./components/ui";
 
 const PASSWORD = "R80329";
 const AUTH_STORAGE_KEY = "tomotomo-wedding-auth";
@@ -23,22 +22,18 @@ const pages = [
 
 const MenuPanel = ({ open, onSelect }) => (
   <div
-    className={`overflow-hidden transition-[max-height,padding] duration-300 ${
-      open ? "max-h-[420px] py-6" : "max-h-0 py-0"
+    className={`absolute inset-x-0 top-full overflow-hidden bg-white/75 backdrop-blur-md transition-[max-height] duration-300 ${
+      open ? "max-h-[480px] border-b border-[#b59bc7]" : "max-h-0 border-b-0"
     }`}
   >
-    <div
-      className={`w-full border-b border-[#efeded] bg-white px-6 transition-shadow duration-300 ${
-        open ? "shadow-[0_20px_60px_rgba(0,0,0,0.08)]" : "shadow-none"
-      }`}
-    >
-      <nav className="flex flex-col gap-4 py-4 text-lg font-semibold text-[color:var(--ink)]">
+    <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
+      <nav className="flex flex-col gap-4 py-4 text-lg font-medium text-[#b59bc7]">
         {pages.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => onSelect(id)}
-            className="border-b border-[#f0f0f0] pb-3 text-left transition hover:text-[color:var(--accent)]"
+            className="border-b border-[#ccb7d9] pb-3 text-left transition hover:opacity-80"
           >
             {label}
           </button>
@@ -95,11 +90,11 @@ const PasswordGate = ({ onUnlock }) => {
               />
             </label>
 
-            {error ? <p className="text-sm text-[#d53535]">{error}</p> : null}
+            {error ? <p className="text-sm text-[color:var(--ink)]">{error}</p> : null}
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-[color:var(--ink)] px-4 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-[color:var(--accent)]"
+              className="w-full rounded-xl border border-[color:var(--ink)] bg-white px-4 py-3 text-sm font-semibold text-[color:var(--ink)] transition duration-300 hover:bg-[#faf5ff]"
             >
               サイトに入る
             </button>
@@ -144,51 +139,24 @@ function App() {
   return (
     <div className="min-h-screen bg-white text-[color:var(--ink)]">
       <header
-        className={`top-0 z-30 px-6 py-4 md:px-10 ${
-          isTopPage
-            ? "fixed inset-x-0 border-none bg-transparent"
-            : "sticky border-b border-[#efeded] bg-white/90 backdrop-blur"
+        className={`fixed inset-x-0 top-0 z-30 px-6 py-4 md:px-10 ${
+          isTopPage ? "border-none bg-transparent" : "border-b border-[#b59bc7] bg-white/70 backdrop-blur-md"
         }`}
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          {!isTopPage ? (
-            <div className="space-y-1">
-              <p className="text-xs uppercase tracking-[0.6em] text-[color:var(--subtle)]">tomotomo wedding</p>
-              <p className="text-lg font-semibold">光と余白でつなぐ一日</p>
-              <div className="flex flex-wrap gap-2 md:hidden">
-                <Pill>2025.11.23</Pill>
-                <Pill>都内邸宅</Pill>
-              </div>
-            </div>
-          ) : (
+          {isTopPage ? (
             <div className="h-12" />
+          ) : (
+            <p className="min-w-0 flex-1 truncate whitespace-nowrap text-[clamp(1.75rem,5.2vw,3.4rem)] font-medium leading-none tracking-[0.02em] text-[#b59bc7]">
+              Tomoya＆Tomomi Wedding
+            </p>
           )}
-          {!isTopPage ? (
-            <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-              {pages.map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => handleSelect(id)}
-                  className={`transition-colors ${
-                    activePage === id ? "text-[color:var(--accent)]" : "text-[color:var(--ink)]"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </nav>
-          ) : null}
-          {!isTopPage ? (
-            <div className="hidden items-center gap-2 md:flex">
-              <Pill>2025.11.23</Pill>
-              <Pill>都内邸宅</Pill>
-            </div>
-          ) : null}
           <button
             type="button"
-            className={`relative inline-flex items-center justify-center text-sm font-semibold tracking-[0.12em] transition ${
-              isTopPage ? "h-10 text-[#ff3a2d]" : "h-12 md:hidden"
+            className={`relative inline-flex shrink-0 items-center justify-center transition hover:opacity-80 ${
+              isTopPage
+                ? "h-10 text-sm font-semibold tracking-[0.12em] text-[color:var(--ink)]"
+                : "h-10 text-[clamp(1.25rem,3.8vw,2rem)] font-medium leading-none tracking-[0.08em] text-[#b59bc7] md:h-12"
             }`}
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-expanded={menuOpen}
@@ -203,7 +171,11 @@ function App() {
       <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(11,47,214,0.08),transparent_55%)]" />
         <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(0,20,137,0.05),transparent_50%)]" />
-        <div className={`relative mx-auto max-w-6xl space-y-12 px-6 pb-14 md:px-10 ${isTopPage ? "pt-0" : "pt-10"}`}>
+        <div
+          className={`relative mx-auto max-w-6xl space-y-12 px-6 pb-14 md:px-10 ${
+            isTopPage ? "pt-0" : "pt-24 md:pt-28"
+          }`}
+        >
           <div key={activePage} className="animate-fade">
             <ActivePage onNavigate={handleSelect} />
           </div>

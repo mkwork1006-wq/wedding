@@ -124,8 +124,8 @@ function GalleryPage() {
             onClick={() => setActiveTab("groom")}
             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               activeTab === "groom"
-                ? "bg-[color:var(--accent)] text-white shadow-sm"
-                : "text-[color:var(--muted)] hover:text-[color:var(--accent)]"
+                ? "bg-[#f7f0ff] text-[color:var(--ink)] shadow-sm"
+                : "text-[color:var(--ink)] hover:text-[color:var(--ink)]"
             }`}
           >
             新郎
@@ -135,8 +135,8 @@ function GalleryPage() {
             onClick={() => setActiveTab("bride")}
             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               activeTab === "bride"
-                ? "bg-[color:var(--accent)] text-white shadow-sm"
-                : "text-[color:var(--muted)] hover:text-[color:var(--accent)]"
+                ? "bg-[#f7f0ff] text-[color:var(--ink)] shadow-sm"
+                : "text-[color:var(--ink)] hover:text-[color:var(--ink)]"
             }`}
           >
             新婦
@@ -190,7 +190,7 @@ function GalleryPage() {
             <button
               type="button"
               onClick={() => setSelected(null)}
-              className="text-2xl leading-none text-[color:var(--muted)] transition hover:text-[color:var(--accent)]"
+              className="text-2xl leading-none text-[color:var(--ink)] transition hover:text-[color:var(--ink)]"
               aria-label="閉じる"
             >
               ✕

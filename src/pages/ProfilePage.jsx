@@ -29,7 +29,7 @@ function ArrowButton({ isGroom, onClick }) {
       type="button"
       onClick={onClick}
       aria-label={`${targetLabel}プロフィールへ`}
-      className="group absolute right-2 top-2 z-10 text-xs font-semibold tracking-[0.28em] text-[color:var(--ink)] transition hover:text-[color:var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+      className="group absolute right-2 top-2 z-10 text-xs font-semibold tracking-[0.28em] text-[color:var(--ink)] transition hover:text-[color:var(--ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
     >
       <span className="text-[11px]">{`${targetLabel}>>`}</span>
     </button>

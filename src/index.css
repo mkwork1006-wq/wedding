@@ -7,9 +7,9 @@
 :root {
   color-scheme: light;
   --accent: #0b2fd6;
-  --ink: #001489;
-  --muted: #1a2b86;
-  --subtle: #5d6fb3;
+  --ink: #B39BC7;
+  --muted: #B39BC7;
+  --subtle: #B39BC7;
 }
 
 * {
@@ -25,6 +25,11 @@ body {
   line-height: 1.7;
   letter-spacing: 0.01em;
   overscroll-behavior: none;
+}
+
+::placeholder {
+  color: var(--ink);
+  opacity: 1;
 }
 
 .glass-panel {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { heroHighlights } from "../data/content";
-import { Pill, SurfaceCard } from "../components/ui";
+import { SurfaceCard } from "../components/ui";
 
 const topImages = Object.entries(
   import.meta.glob("../assets/images/top/TOP_*.*", {
@@ -36,7 +35,7 @@ function TopPage({ onNavigate }) {
   const [isPaused, setIsPaused] = useState(false);
   const totalSlides = heroSlides.length;
   const quickLinks = [
-    { id: "seating", label: "座席表", image: buttonImages["zasakihyou_button.png"] ?? null },
+    { id: "seating", label: "席次表", image: buttonImages["zasakihyou_button.png"] ?? null },
     { id: "courses", label: "コース料理", image: buttonImages["cooking_button.png"] ?? null },
     { id: "profile", label: "プロフィール", image: buttonImages["profile_button.png"] ?? null },
     { id: "gallery", label: "ギャラリー", image: buttonImages["gallery_button.png"] ?? null }
@@ -81,7 +80,7 @@ function TopPage({ onNavigate }) {
               />
             ))}
             <div className="pointer-events-none absolute left-6 top-1/2 z-20 -translate-y-1/2 md:left-10">
-              <p className="origin-center rotate-180 font-['Noto_Sans_JP'] text-[34px] font-semibold leading-none tracking-[0.04em] text-[#ff3a2d] [writing-mode:vertical-rl] [text-orientation:mixed]">
+              <p className="origin-center rotate-180 font-['Noto_Sans_JP'] text-[34px] font-semibold leading-none tracking-[0.04em] text-[color:var(--ink)] [writing-mode:vertical-rl] [text-orientation:mixed]">
                 Welcome to our Wedding
               </p>
             </div>
@@ -109,7 +108,7 @@ function TopPage({ onNavigate }) {
       <div className="space-y-3 text-center">
         <p className="mb-2 text-5xl font-semibold leading-none text-[color:var(--ink)] md:text-6xl">03/29</p>
         <p className="mx-auto max-w-4xl text-sm text-[color:var(--muted)] md:text-base">
-          本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。このサイトでは座席表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
+          本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。このサイトでは席次表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
         </p>
       </div>
       <div className="mx-auto grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
@@ -121,7 +120,7 @@ function TopPage({ onNavigate }) {
               className="group w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
               aria-label={`${label}へ`}
             >
-              <div className="aspect-square overflow-hidden rounded-2xl border border-[#efeded] bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5 group-hover:border-[color:var(--accent)]">
+              <div className="aspect-square overflow-hidden rounded-2xl bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5">
                 {image ? (
                   <img
                     src={image}
@@ -139,7 +138,7 @@ function TopPage({ onNavigate }) {
             <button
               type="button"
               onClick={() => onNavigate?.(id)}
-              className="text-sm font-semibold text-[color:var(--ink)] underline decoration-[1.5px] underline-offset-4 transition hover:text-[color:var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+              className="text-sm font-semibold text-[color:var(--ink)] underline decoration-[1.5px] underline-offset-4 transition hover:text-[color:var(--ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
               aria-label={`${label}へ`}
             >
               {label}
@@ -147,59 +146,6 @@ function TopPage({ onNavigate }) {
           </div>
         ))}
       </div>
-      <div className="grid gap-8 md:grid-cols-[1.25fr_0.85fr] md:items-start">
-        <div className="space-y-5">
-          <p className="text-xs uppercase tracking-[0.4em] text-[color:var(--subtle)]">tomotomo</p>
-          <h1 className="text-4xl font-semibold leading-tight text-[color:var(--ink)] md:text-5xl">
-            白の余白に、光と時間のレイヤーを重ねたウェディングページ。
-          </h1>
-          <p className="text-base text-[color:var(--muted)]">
-            ゲストが自分らしく呼吸できるよう、動線・香り・音・明かりをゆるやかに整えました。
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {heroHighlights.map(({ title, description }) => (
-              <SurfaceCard
-                key={title}
-                tone="muted"
-                className="p-4 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#d9ccd333]"
-              >
-                <p className="text-[11px] uppercase tracking-[0.4em] text-[color:var(--subtle)]">{title}</p>
-                <p className="mt-2 text-sm text-[color:var(--muted)]">{description}</p>
-              </SurfaceCard>
-            ))}
-          </div>
-        </div>
-        <SurfaceCard
-          tone="frosted"
-          className="p-6 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(0,0,0,0.12)]"
-        >
-          <p className="text-xs tracking-[0.4em] text-[color:var(--accent)]">コンセプト</p>
-          <h2 className="mt-2 text-2xl font-semibold text-[color:var(--ink)]">しなやかなヴォールト</h2>
-          <p className="mt-3 text-sm text-[color:var(--muted)]">
-            柔らかな曲線で構成された空間に、ガラス越しの光を取り入れて心地よい流れをつくります。
-            時間帯に合わせてキャンドルと音楽を調整し、静けさと温度が交互に訪れるリズムを描きます。
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Pill>光のゆらぎ</Pill>
-            <Pill>余白の安心感</Pill>
-            <Pill>素材の静けさ</Pill>
-          </div>
-        </SurfaceCard>
-      </div>
-      <SurfaceCard tone="plain" className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-2">
-          <p className="text-xs tracking-[0.4em] text-[color:var(--subtle)]">お約束</p>
-          <p className="text-sm text-[color:var(--muted)]">
-            招待状から当日の導線まで「静かに寄り添う設計」で統一。モバイルでも読みやすいタイポグラフィと、
-            スクロールを誘いすぎないコンパクトなセクション配置を意識しています。
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Pill>ゲストファースト</Pill>
-          <Pill>モバイルフレンドリー</Pill>
-          <Pill>軽やかなアニメーション</Pill>
-        </div>
-      </SurfaceCard>
     </section>
   );
 }

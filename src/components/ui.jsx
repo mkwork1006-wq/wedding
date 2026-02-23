@@ -22,7 +22,7 @@ const toneStyles = {
   muted: "border border-[#efeded] bg-[#fafafa]",
   frosted: "border border-[#efeded] bg-white/80 backdrop-blur shadow-[0_20px_60px_rgba(8,8,8,0.06)]",
   glow:
-    "border border-white/50 bg-gradient-to-br from-[#1f1f1f] via-[#4b4a4b] to-[#d6d4d5] text-white shadow-[0_20px_80px_rgba(12,6,3,0.32)]"
+    "border border-white/50 bg-gradient-to-br from-[#1f1f1f] via-[#4b4a4b] to-[#d6d4d5] text-[color:var(--ink)] shadow-[0_20px_80px_rgba(12,6,3,0.32)]"
 };
 
 export function SurfaceCard({ tone = "plain", className = "", children }) {
