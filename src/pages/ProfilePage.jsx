@@ -89,7 +89,7 @@ function ProfilePage({ id = "profile", initialProfile = "groom" }) {
       <div className="mx-auto w-full max-w-[28rem] space-y-6 md:space-y-8">
         <div className="text-center">
           <p className="mb-1 text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ PROFILE</p>
-          <div className="inline-flex items-center gap-3 font-['Cormorant_Garamond'] text-[2rem] font-semibold italic leading-none tracking-[0.01em] text-[color:var(--ink)] md:text-[2.2rem]">
+          <div className="inline-flex items-center gap-3 font-['Playfair_Display'] text-[2rem] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] md:text-[2.2rem]">
             {profileTabs.map((tab, index) => (
               <div key={tab.id} className="inline-flex items-center gap-3">
                 <button

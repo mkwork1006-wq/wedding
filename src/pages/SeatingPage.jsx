@@ -184,8 +184,8 @@ function SeatingPage() {
             type="text"
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="ご氏名を漢字で入力"
-            className="h-14 w-full rounded-2xl border-[3px] border-[#b59bc7] bg-white px-5 py-0 pr-16 text-2xl text-[#b59bc7] outline-none transition placeholder:text-lg placeholder:text-[#ccb7d9] focus:border-[#b59bc7] focus:ring-2 focus:ring-[#e2d8ea]"
+            placeholder="ご氏名を漢字でご入力ください"
+            className="h-14 w-full rounded-2xl border-[3px] border-[#b59bc7] bg-white px-5 py-0 pr-16 text-2xl leading-[3.5rem] text-[#b59bc7] outline-none transition placeholder:text-lg placeholder:leading-[3.5rem] placeholder:text-[#ccb7d9] focus:border-[#b59bc7] focus:ring-2 focus:ring-[#e2d8ea]"
           />
           <span
             className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#b59bc7]"

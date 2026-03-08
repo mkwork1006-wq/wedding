@@ -57,7 +57,7 @@ const MenuPanel = ({ open, onSelect, onClose }) => (
       </div>
 
       <div className="mt-6 border-t border-[#d9c8e4] pt-5">
-        <p className="font-['Cormorant_Garamond'] text-[1.95rem] font-semibold italic leading-none tracking-[0.01em] text-[#b59bc7]">
+        <p className="font-['Playfair_Display'] text-[1.95rem] font-semibold leading-none tracking-[0.01em] text-[#b59bc7]">
           Menu
         </p>
       </div>
@@ -236,7 +236,6 @@ function App() {
 
       <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(130,130,130,0.06),transparent_55%)]" />
-        <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(120,120,120,0.04),transparent_50%)]" />
         <div
           className={`relative mx-auto max-w-6xl space-y-12 px-6 pb-14 md:px-10 ${
             isTopPage ? "pt-0" : "pt-24 md:pt-28"

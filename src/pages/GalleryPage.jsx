@@ -366,7 +366,7 @@ function GalleryPage() {
           <button
             type="button"
             onClick={() => setActiveTab("groom")}
-            className={`group relative pb-3 font-['Cormorant_Garamond'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold italic leading-none tracking-[0.04em] transition-colors duration-300 ${
+            className={`group relative pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
               activeTab === "groom"
                 ? "text-[#b59bc7]"
                 : "text-[#ababab] hover:text-[#8f8f8f]"
@@ -385,7 +385,7 @@ function GalleryPage() {
           <button
             type="button"
             onClick={() => setActiveTab("bride")}
-            className={`group relative pb-3 font-['Cormorant_Garamond'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold italic leading-none tracking-[0.04em] transition-colors duration-300 ${
+            className={`group relative pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
               activeTab === "bride"
                 ? "text-[#b59bc7]"
                 : "text-[#ababab] hover:text-[#8f8f8f]"

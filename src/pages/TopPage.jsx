@@ -158,7 +158,7 @@ function TopPage({ onNavigate }) {
           </div>
         ) : null}
         <div className="border border-[#ececec] bg-[#f3f3f3] px-4 pb-6 pt-5 text-center sm:px-8 sm:pb-8 sm:pt-6">
-          <p className="mt-2 font-['Cormorant_Garamond'] text-[58px] font-semibold italic leading-none tracking-[0.01em] text-[color:var(--ink)] sm:text-[76px]">
+          <p className="mt-2 font-['Playfair_Display'] text-[46px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] sm:text-[61px]">
             2026.03.29
           </p>
           <p className="mx-auto mt-6 max-w-4xl text-[15px] font-medium leading-8 text-[color:var(--muted)] sm:text-base">
