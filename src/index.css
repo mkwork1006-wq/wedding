@@ -65,6 +65,11 @@ body {
     animation: arrowInLeft 0.45s ease forwards;
   }
 
+  .animate-memory-marquee {
+    animation: memoryMarquee 40s linear infinite;
+    will-change: transform;
+  }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
@@ -108,13 +113,23 @@ body {
       transform: scale(1);
     }
   }
+
+  @keyframes memoryMarquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade,
   .animate-gallery-reveal,
   .animate-arrow-in-right,
-  .animate-arrow-in-left {
+  .animate-arrow-in-left,
+  .animate-memory-marquee {
     animation: none;
   }
 }

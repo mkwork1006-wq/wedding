@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { SurfaceCard } from "../components/ui";
+import hanatabaImage from "../assets/images/etc/hanataba.png";
 
 const topImages = Object.entries(
   import.meta.glob("../assets/images/top/TOP_*.*", {
@@ -10,8 +12,17 @@ const topImages = Object.entries(
   .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
   .map(([, src]) => src);
 
+const memoryImages = Object.entries(
+  import.meta.glob("../assets/images/memory/*.{png,jpg,jpeg,webp,avif}", {
+    eager: true,
+    import: "default"
+  })
+)
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true, sensitivity: "base" }))
+  .map(([, src]) => src);
+
 const buttonImages = Object.entries(
-  import.meta.glob("../assets/images/buttons/*.png", {
+  import.meta.glob("../assets/images/buttons/*.{png,jpg,jpeg,webp,avif}", {
     eager: true,
     import: "default"
   })
@@ -24,6 +35,7 @@ const buttonImages = Object.entries(
 }, {});
 
 const heroSlides = topImages;
+const memoryLoopImages = [...memoryImages, ...memoryImages];
 const swipeThreshold = 50;
 
 function TopPage({ onNavigate }) {
@@ -34,14 +46,15 @@ function TopPage({ onNavigate }) {
     return Math.floor(Math.random() * heroSlides.length);
   });
   const [isPaused, setIsPaused] = useState(false);
+  const [selectedMemoryIndex, setSelectedMemoryIndex] = useState(null);
   const touchStartXRef = useRef(null);
   const touchMoveXRef = useRef(null);
   const totalSlides = heroSlides.length;
   const quickLinks = [
     { id: "seating", label: "席次表", image: buttonImages["zasakihyou_button.png"] ?? null },
-    { id: "courses", label: "コース料理", image: buttonImages["cooking_button.png"] ?? null },
-    { id: "profile", label: "プロフィール", image: buttonImages["profile_button.png"] ?? null },
-    { id: "gallery", label: "ギャラリー", image: buttonImages["gallery_button.png"] ?? null }
+    { id: "courses", label: "コース料理", image: buttonImages["cooking_button2.jpg"] ?? null },
+    { id: "profile", label: "プロフィール", image: buttonImages["profile_button2.jpg"] ?? null },
+    { id: "gallery", label: "ギャラリー", image: buttonImages["gallery_button2.jpg"] ?? null }
   ];
 
   useEffect(() => {
@@ -53,6 +66,28 @@ function TopPage({ onNavigate }) {
     }, 6500);
     return () => window.clearTimeout(timer);
   }, [activeIndex, isPaused, totalSlides]);
+
+  useEffect(() => {
+    if (selectedMemoryIndex === null) {
+      return undefined;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setSelectedMemoryIndex(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedMemoryIndex]);
 
   const moveSlideBy = (direction) => {
     if (totalSlides <= 1) {
@@ -97,6 +132,48 @@ function TopPage({ onNavigate }) {
     }
     moveSlideBy(deltaX < 0 ? 1 : -1);
   };
+
+  const selectedMemoryImage = selectedMemoryIndex !== null ? memoryImages[selectedMemoryIndex] : null;
+
+  const openMemoryModal = (loopIndex) => {
+    if (!memoryImages.length) {
+      return;
+    }
+    setSelectedMemoryIndex(loopIndex % memoryImages.length);
+  };
+
+  const closeMemoryModal = () => {
+    setSelectedMemoryIndex(null);
+  };
+
+  const memoryModal = selectedMemoryImage
+    ? createPortal(
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-white/90 px-4 py-8 backdrop-blur-sm"
+          onClick={closeMemoryModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="思い出の写真の拡大表示"
+        >
+          <div className="w-full max-w-5xl" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              onClick={closeMemoryModal}
+              className="mb-3 text-3xl leading-none text-[#7c6988] transition hover:text-[#5f4f69] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b59bc7]"
+              aria-label="拡大画像を閉じる"
+            >
+              ×
+            </button>
+            <img
+              src={selectedMemoryImage}
+              alt={`思い出の写真 ${selectedMemoryIndex + 1}（拡大）`}
+              className="max-h-[82vh] w-full bg-white object-contain"
+            />
+          </div>
+        </div>,
+        document.body
+      )
+    : null;
 
   return (
     <section className="space-y-7 md:space-y-8" id="hero">
@@ -157,16 +234,53 @@ function TopPage({ onNavigate }) {
             ))}
           </div>
         ) : null}
-        <div className="border border-[#ececec] bg-[#f3f3f3] px-4 pb-6 pt-5 text-center sm:px-8 sm:pb-8 sm:pt-6">
+        {memoryImages.length ? (
+          <section aria-label="思い出の写真" className="mb-7 space-y-4 md:mb-9">
+            <h2 className="relative -left-[30px] px-4 font-['Playfair_Display'] text-[45px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] sm:px-6">
+              Memory
+            </h2>
+            <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+              <div
+                className={`flex w-max gap-4 animate-memory-marquee py-1 [animation-duration:36s] hover:[animation-play-state:paused] ${
+                  selectedMemoryImage ? "[animation-play-state:paused]" : ""
+                }`}
+              >
+                {memoryLoopImages.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    type="button"
+                    onClick={() => openMemoryModal(index)}
+                    className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2"
+                    aria-label={`思い出の写真 ${(index % memoryImages.length) + 1} を拡大表示`}
+                  >
+                    <img
+                      src={image}
+                      alt={`思い出の写真 ${(index % memoryImages.length) + 1}`}
+                      className="h-[220px] w-auto max-w-none object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        ) : null}
+        <div className="relative border border-[#ececec] bg-[#f3f3f3] px-4 pb-6 pt-5 text-center sm:px-8 sm:pb-8 sm:pt-6">
           <p className="mt-2 font-['Playfair_Display'] text-[46px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] sm:text-[61px]">
             2026.03.29
           </p>
           <p className="mx-auto mt-6 max-w-4xl text-[15px] font-medium leading-8 text-[color:var(--muted)] sm:text-base">
             本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。<br />このサイトでは席次表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
           </p>
+          <img
+            src={hanatabaImage}
+            alt="花束の装飾"
+            className="pointer-events-none absolute -bottom-[24px] right-[-22px] z-20 w-[72px] sm:-bottom-[40px] sm:right-[-18px] sm:w-[90px]"
+            loading="lazy"
+          />
         </div>
       </div>
-      <div className="mx-auto grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
+      <div className="mx-auto mt-[30px] grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
         {quickLinks.map(({ id, label, image }) => (
           <div key={id} className="flex flex-col items-center gap-2">
             <button
@@ -175,7 +289,7 @@ function TopPage({ onNavigate }) {
               className="group w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
               aria-label={`${label}へ`}
             >
-              <div className="aspect-square overflow-hidden rounded-2xl bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5">
+              <div className="aspect-[4/5] overflow-hidden rounded-none bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5">
                 {image ? (
                   <img
                     src={image}
@@ -201,6 +315,7 @@ function TopPage({ onNavigate }) {
           </div>
         ))}
       </div>
+      {memoryModal}
     </section>
   );
 }
