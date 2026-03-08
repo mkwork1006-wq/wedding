@@ -11,6 +11,20 @@ const seatingImages = Object.entries(
 
 // この配列を後から実データに差し替えるだけで検索対象を更新できます。
 const seatingGuestList = [
+  { name: "福野　光一", table: "A" },
+  { name: "福野　南", table: "A" },
+  { name: "永里　天識", table: "A" },
+  { name: "戸井田　智之", table: "A" },
+  { name: "渡邉　一世", table: "A" },
+  { name: "里中　宏夢", table: "A" },
+  { name: "堀田　朋花", table: "A" },
+  { name: "野瀬　歩夢", table: "B" },
+  { name: "齊藤　宏輔", table: "B" },
+  { name: "井上　裕斗", table: "B" },
+  { name: "石川　拓也", table: "B" },
+  { name: "蛭間　俊介", table: "B" },
+  { name: "蛭間　凛空", table: "B" },
+  { name: "蛭間　麟", table: "B" },
   { name: "松村　温子", table: "C" },
   { name: "加藤　美雪", table: "C" },
   { name: "宮﨑　花怜", table: "C" },
@@ -26,12 +40,31 @@ const seatingGuestList = [
   { name: "熊　偉傑", table: "D" },
   { name: "森山　みゆき", table: "D" },
   { name: "山上　亜弥", table: "D" },
+  { name: "川村　逸生", table: "E" },
+  { name: "岩井　桃花", table: "E" },
+  { name: "征矢　依央里", table: "E" },
+  { name: "福山　直弥", table: "E" },
+  { name: "冨野　剛史", table: "E" },
+  { name: "許田　雄大", table: "E" },
+  { name: "大沼　明梨", table: "F" },
+  { name: "佐藤　里咲", table: "F" },
+  { name: "橋本　明寿香", table: "F" },
+  { name: "濱田　世菜", table: "F" },
+  { name: "笠原　健吾", table: "F" },
+  { name: "大西　廣太", table: "F" },
+  { name: "古川　真穂", table: "F" },
+  { name: "新宮　隼", table: "F" },
   { name: "齊藤　貴祐", table: "G" },
   { name: "箕輪　駿", table: "G" },
   { name: "千葉　彩瑛", table: "G" },
   { name: "宮脇　聡志", table: "G" },
   { name: "小松　由佳", table: "G" },
   { name: "佐々木　そよ香", table: "G" },
+  { name: "津々木　雄太", table: "H" },
+  { name: "津々木　実久", table: "H" },
+  { name: "富松　晃子", table: "H" },
+  { name: "井殿　玲香", table: "H" },
+  { name: "井殿　佑太", table: "H" },
   { name: "藤木　真央", table: "I" },
   { name: "清野　みな実", table: "I" },
   { name: "内海　慶祐", table: "I" },
@@ -42,6 +75,18 @@ const seatingGuestList = [
   { name: "森木　知里", table: "J" },
   { name: "小川　陸", table: "J" },
   { name: "福元　郁弥", table: "J" },
+  { name: "山下　優理", table: "K" },
+  { name: "山下　達也", table: "K" },
+  { name: "山下　美智子", table: "K" },
+  { name: "武田　美優", table: "K" },
+  { name: "武田　直栄", table: "K" },
+  { name: "山下　俊也", table: "K" },
+  { name: "井本　航輔", table: "L" },
+  { name: "井本　勝博", table: "L" },
+  { name: "登尾　利明", table: "L" },
+  { name: "井本　修慈", table: "L" },
+  { name: "井本　美和子", table: "L" },
+  { name: "登尾　美千代", table: "L" },
   { name: "神谷　仁基", table: "M" },
   { name: "南　美咲", table: "M" },
   { name: "高畑　真菜美", table: "M" },
@@ -138,10 +183,10 @@ function SeatingPage() {
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
             placeholder="お名前を入力"
-            className="w-full rounded-2xl border-[3px] border-[#9ccfd6] bg-[#f9fcfc] px-5 py-2 pr-16 text-2xl text-black outline-none transition placeholder:text-[#9ccfd6] focus:border-[#7dbac4] focus:ring-2 focus:ring-[#cae6ea]"
+            className="h-14 w-full rounded-2xl border-[3px] border-[#b59bc7] bg-white px-5 py-0 pr-16 text-2xl text-[#b59bc7] outline-none transition placeholder:text-lg placeholder:text-[#ccb7d9] focus:border-[#b59bc7] focus:ring-2 focus:ring-[#e2d8ea]"
           />
           <span
-            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8ec4cc]"
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#b59bc7]"
             aria-hidden="true"
           >
             <svg viewBox="0 0 24 24" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth="2.2">
@@ -153,21 +198,33 @@ function SeatingPage() {
 
         {normalizedQuery ? (
           filteredGuests.length > 0 ? (
-            <ul className="border-t border-[#ccb7d9]">
-              {filteredGuests.map((guest) => (
-                <li key={guest.name} className="border-b border-[#ccb7d9] px-1 py-2 text-3xl text-black">
-                  {guest.name}
-                  <span className="ml-4">{guest.table} テーブル</span>
-                </li>
-              ))}
-            </ul>
+            <div className="space-y-2 pt-1">
+              <p className="px-1 text-xs tracking-[0.08em] text-[#ccb7d9]">
+                検索結果 {filteredGuests.length} 件
+              </p>
+              <ul className="space-y-2">
+                {filteredGuests.map((guest) => (
+                  <li
+                    key={guest.name}
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-3 shadow-[0_8px_20px_rgba(181,155,199,0.12)] transition duration-200 hover:-translate-y-0.5 hover:border-[#b59bc7]"
+                  >
+                    <p className="text-[clamp(1.05rem,4.1vw,1.4rem)] font-medium tracking-[0.02em] text-[#b59bc7]">
+                      {guest.name}
+                    </p>
+                    <span className="shrink-0 rounded-full border border-[#b59bc7] bg-[#faf7fd] px-3 py-1 text-sm font-semibold tracking-[0.04em] text-[#b59bc7]">
+                      {guest.table} テーブル
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : (
-            <p className="border-y border-[#ccb7d9] px-1 py-3 text-lg text-[#7c6988]">
+            <p className="rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
               該当するお名前が見つかりませんでした。
             </p>
           )
         ) : (
-          <p className="border-y border-[#ccb7d9] px-1 py-3 text-lg text-[#7c6988]">
+          <p className="rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
             お名前を入力するとテーブル名が表示されます。
           </p>
         )}

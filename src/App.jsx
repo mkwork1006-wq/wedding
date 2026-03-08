@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TopPage from "./pages/TopPage";
 import SeatingPage from "./pages/SeatingPage";
 import CoursesPage from "./pages/CoursesPage";
@@ -13,32 +13,66 @@ const AUTH_STORAGE_KEY = "tomotomo-wedding-auth";
 const pages = [
   { id: "hero", label: "トップ", component: TopPage },
   { id: "seating", label: "席次表", component: SeatingPage },
-  { id: "courses", label: "コースメニュー", component: CoursesPage },
+  { id: "courses", label: "コース料理", component: CoursesPage },
   { id: "profile", label: "プロフィール", component: ProfilePage },
   { id: "gallery", label: "ギャラリー", component: GalleryPage },
   { id: "faq", label: "ご質問", component: FaqPage },
   { id: "temp", label: "仮", component: TempPage }
 ];
 
-const MenuPanel = ({ open, onSelect }) => (
+const menuItems = [
+  { id: "hero", label: "トップ" },
+  { id: "seating", label: "席次表" },
+  { id: "courses", label: "コース料理" },
+  { id: "profile", label: "プロフィール" },
+  { id: "gallery", label: "ギャラリー" }
+];
+
+const MenuPanel = ({ open, onSelect, onClose }) => (
   <div
-    className={`absolute inset-x-0 top-full overflow-hidden bg-white/75 backdrop-blur-md transition-[max-height] duration-300 ${
-      open ? "max-h-[480px] border-b border-[#b59bc7]" : "max-h-0 border-b-0"
+    className={`absolute right-0 top-full z-40 w-[min(90vw,430px)] origin-top-right transition duration-300 ${
+      open
+        ? "pointer-events-auto translate-y-3 scale-100 opacity-100"
+        : "pointer-events-none translate-y-0 scale-95 opacity-0"
     }`}
   >
-    <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
-      <nav className="flex flex-col gap-4 py-4 text-lg font-medium text-[#b59bc7]">
-        {pages.map(({ id, label }) => (
+    <div className="relative rounded-[2rem] border-[3px] border-[#b59bc7] bg-[#f9f5fc]/95 px-6 pb-7 pt-8 shadow-[0_22px_50px_rgba(115,85,136,0.24)] backdrop-blur-md">
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#b59bc7] text-[#b59bc7] transition hover:bg-[#efe4f7]"
+        aria-label="メニューを閉じる"
+      >
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 6L18 18" strokeLinecap="round" />
+          <path d="M18 6L6 18" strokeLinecap="round" />
+        </svg>
+      </button>
+
+      <div className="pr-12">
+        <p className="text-[clamp(1.4rem,5vw,2.05rem)] font-semibold tracking-[0.02em] text-[#b59bc7]">
+          Tomoya &amp; Tomomi Wedding
+        </p>
+        <p className="mt-1 text-[0.7rem] tracking-[0.25em] text-[#c6b0d6]">MENU NAVIGATION</p>
+      </div>
+
+      <div className="mt-6 border-t border-[#d9c8e4] pt-5">
+        <p className="text-[1.95rem] italic leading-none text-[#b59bc7]">Menu</p>
+      </div>
+
+      <nav className="mt-6 grid grid-cols-2 gap-3 text-[#b59bc7] sm:grid-cols-3">
+        {menuItems.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => onSelect(id)}
-            className="border-b border-[#ccb7d9] pb-3 text-left transition hover:opacity-80"
+            className="rounded-2xl border border-[#ccb7de] bg-white/85 px-3 py-3 text-left text-sm font-semibold tracking-[0.06em] transition duration-200 hover:-translate-y-0.5 hover:border-[#b59bc7] hover:bg-white"
           >
             {label}
           </button>
         ))}
       </nav>
+
     </div>
   </div>
 );
@@ -116,6 +150,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activePage, setActivePage] = useState("hero");
   const isTopPage = activePage === "hero";
+  const menuLayerRef = useRef(null);
 
   const ActivePage = pages.find((page) => page.id === activePage)?.component ?? TopPage;
 
@@ -132,6 +167,33 @@ function App() {
     setMenuOpen(false);
   };
 
+  useEffect(() => {
+    if (!menuOpen) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event) => {
+      if (menuLayerRef.current?.contains(event.target)) {
+        return;
+      }
+      setMenuOpen(false);
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [menuOpen]);
+
   if (!isAuthenticated) {
     return <PasswordGate onUnlock={handleUnlock} />;
   }
@@ -143,29 +205,31 @@ function App() {
           isTopPage ? "border-none bg-transparent" : "border-b border-[#b59bc7] bg-white/70 backdrop-blur-md"
         }`}
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-          {isTopPage ? (
-            <div className="h-12" />
-          ) : (
-            <p className="min-w-0 flex-1 truncate whitespace-nowrap text-[clamp(1.75rem,5.2vw,3.4rem)] font-medium leading-none tracking-[0.02em] text-[#b59bc7]">
-              Tomoya＆Tomomi Wedding
-            </p>
-          )}
-          <button
-            type="button"
-            className={`relative inline-flex shrink-0 items-center justify-center transition hover:opacity-80 ${
-              isTopPage
-                ? "h-10 text-sm font-semibold tracking-[0.12em] text-[color:var(--ink)]"
-                : "h-10 text-[clamp(1.25rem,3.8vw,2rem)] font-medium leading-none tracking-[0.08em] text-[#b59bc7] md:h-12"
-            }`}
-            onClick={() => setMenuOpen((prev) => !prev)}
-            aria-expanded={menuOpen}
-            aria-label="ナビゲーションを開閉"
-          >
-            MENU
-          </button>
+        <div ref={menuLayerRef} className="relative mx-auto max-w-6xl">
+          <div className="flex items-center justify-between gap-4">
+            {isTopPage ? (
+              <div className="h-12" />
+            ) : (
+              <p className="min-w-0 flex-1 whitespace-nowrap text-[clamp(0.875rem,2.6vw,1.7rem)] font-medium leading-[1.25] tracking-[0.02em] text-[#b59bc7]">
+                Tomoya＆Tomomi Wedding
+              </p>
+            )}
+            <button
+              type="button"
+              className={`relative inline-flex shrink-0 items-center justify-center rounded-full border border-[#b59bc7] px-5 transition ${
+                isTopPage
+                  ? "h-10 bg-white/85 text-sm font-semibold tracking-[0.12em] text-[#b59bc7] backdrop-blur-md hover:bg-white"
+                  : "h-10 bg-white text-sm font-semibold tracking-[0.12em] text-[#b59bc7] hover:bg-[#faf5ff] md:h-11"
+              }`}
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-expanded={menuOpen}
+              aria-label="ナビゲーションを開閉"
+            >
+              MENU
+            </button>
+          </div>
+          <MenuPanel open={menuOpen} onSelect={handleSelect} onClose={() => setMenuOpen(false)} />
         </div>
-        <MenuPanel open={menuOpen} onSelect={handleSelect} />
       </header>
 
       <main className="relative overflow-hidden">

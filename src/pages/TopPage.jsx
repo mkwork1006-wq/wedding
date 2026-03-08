@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SurfaceCard } from "../components/ui";
 
 const topImages = Object.entries(
@@ -24,6 +24,7 @@ const buttonImages = Object.entries(
 }, {});
 
 const heroSlides = topImages;
+const swipeThreshold = 50;
 
 function TopPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(() => {
@@ -33,6 +34,8 @@ function TopPage({ onNavigate }) {
     return Math.floor(Math.random() * heroSlides.length);
   });
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartXRef = useRef(null);
+  const touchMoveXRef = useRef(null);
   const totalSlides = heroSlides.length;
   const quickLinks = [
     { id: "seating", label: "席次表", image: buttonImages["zasakihyou_button.png"] ?? null },
@@ -51,6 +54,50 @@ function TopPage({ onNavigate }) {
     return () => window.clearTimeout(timer);
   }, [activeIndex, isPaused, totalSlides]);
 
+  const moveSlideBy = (direction) => {
+    if (totalSlides <= 1) {
+      return;
+    }
+    setActiveIndex((prev) => (prev + direction + totalSlides) % totalSlides);
+  };
+
+  const handleTouchStart = (event) => {
+    if (totalSlides <= 1) {
+      return;
+    }
+    const firstTouch = event.touches[0];
+    if (!firstTouch) {
+      return;
+    }
+    touchStartXRef.current = firstTouch.clientX;
+    touchMoveXRef.current = firstTouch.clientX;
+    setIsPaused(true);
+  };
+
+  const handleTouchMove = (event) => {
+    const firstTouch = event.touches[0];
+    if (!firstTouch) {
+      return;
+    }
+    touchMoveXRef.current = firstTouch.clientX;
+  };
+
+  const finalizeTouch = () => {
+    const startX = touchStartXRef.current;
+    const endX = touchMoveXRef.current;
+    touchStartXRef.current = null;
+    touchMoveXRef.current = null;
+    setIsPaused(false);
+    if (startX === null || endX === null) {
+      return;
+    }
+    const deltaX = endX - startX;
+    if (Math.abs(deltaX) < swipeThreshold) {
+      return;
+    }
+    moveSlideBy(deltaX < 0 ? 1 : -1);
+  };
+
   return (
     <section className="space-y-10" id="hero">
       <SurfaceCard
@@ -63,10 +110,14 @@ function TopPage({ onNavigate }) {
       >
         {totalSlides ? (
           <div
-            className="relative h-[570px] w-full md:h-[670px]"
+            className="relative h-[570px] w-full touch-pan-y md:h-[670px]"
             role="region"
             aria-roledescription="carousel"
             aria-label="トップビジュアルのカルーセル"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={finalizeTouch}
+            onTouchCancel={finalizeTouch}
           >
             {heroSlides.map((slide, index) => (
               <img
