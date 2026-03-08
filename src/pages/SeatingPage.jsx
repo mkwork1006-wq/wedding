@@ -146,7 +146,9 @@ function SeatingPage() {
 
   return (
     <section id="seating" className="mx-auto w-full max-w-3xl space-y-5 pb-4">
-      <h2 className="text-4xl font-medium tracking-[0.04em] text-[#b59bc7] md:text-5xl">席次表</h2>
+      <div className="text-center">
+        <p className="text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ SEATING CHART</p>
+      </div>
 
       <button
         type="button"
@@ -182,7 +184,7 @@ function SeatingPage() {
             type="text"
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder="お名前を入力"
+            placeholder="ご氏名を漢字で入力"
             className="h-14 w-full rounded-2xl border-[3px] border-[#b59bc7] bg-white px-5 py-0 pr-16 text-2xl text-[#b59bc7] outline-none transition placeholder:text-lg placeholder:text-[#ccb7d9] focus:border-[#b59bc7] focus:ring-2 focus:ring-[#e2d8ea]"
           />
           <span
@@ -225,7 +227,7 @@ function SeatingPage() {
           )
         ) : (
           <p className="rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
-            お名前を入力するとテーブル名が表示されます。
+            ご氏名を入力するとテーブル名が表示されます。
           </p>
         )}
       </div>

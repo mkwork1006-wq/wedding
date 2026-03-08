@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { SectionShell } from "../components/ui";
 
 const collectImages = (modules) =>
@@ -166,39 +167,109 @@ function GalleryPage() {
     showNext();
   };
 
+  const fullscreenModal =
+    hasSelection && selectedImage
+      ? createPortal(
+          <div
+            className="fixed inset-0 z-[120] bg-black/95"
+            onClick={() => setSelectedIndex(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="全画面画像"
+          >
+            <div
+              className="relative flex h-full w-full items-center justify-center px-4 py-14 sm:px-8"
+              onClick={(event) => event.stopPropagation()}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setSelectedIndex(null)}
+                  className="absolute -top-12 right-1 z-10 text-[2rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                  aria-label="閉じる"
+                >
+                  ×
+                </button>
+                <img
+                  src={selectedImage}
+                  alt={`${activeLabel}ギャラリー ${selectedIndex + 1}`}
+                  className="max-h-[82vh] max-w-full rounded-md object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)] select-none"
+                  draggable="false"
+                />
+
+                {activeImages.length > 1 ? (
+                  <div className="flex items-center justify-center gap-12 pb-1">
+                    <button
+                      type="button"
+                      onClick={showPrev}
+                      className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                      aria-label="前の写真"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      onClick={showNext}
+                      className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                      aria-label="次の写真"
+                    >
+                      ›
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>,
+          document.body
+        )
+      : null;
+
   return (
-    <SectionShell
-      id="gallery"
-      eyebrow="ギャラリー"
-      title="ギャラリー"
-      description="正方形のフレームに、ふたりの空気感を等間隔で並べました。タブで切り替え、タップで全画面表示できます。"
-    >
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="inline-flex rounded-full border border-[#e9e6e3] bg-white p-1 shadow-sm">
+    <SectionShell id="gallery">
+      <div className="space-y-4">
+        <p className="text-center text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ GALLERY</p>
+        <div className="mx-auto grid w-full max-w-[24rem] grid-cols-2 gap-5 px-1 text-center">
           <button
             type="button"
             onClick={() => setActiveTab("groom")}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            className={`group relative pb-3 text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.08em] transition-colors duration-300 ${
               activeTab === "groom"
-                ? "bg-[#f7f0ff] text-[color:var(--ink)] shadow-sm"
-                : "text-[color:var(--ink)] hover:text-[color:var(--ink)]"
+                ? "text-[#b59bc7]"
+                : "text-[#ababab] hover:text-[#8f8f8f]"
             }`}
           >
             新郎
+            <span
+              aria-hidden="true"
+              className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full transition-all duration-300 ${
+                activeTab === "groom"
+                  ? "w-[74%] bg-gradient-to-r from-[#cfbfdd] via-[#b59bc7] to-[#cfbfdd] opacity-100"
+                  : "w-[56%] bg-[#b6b6b6] opacity-75 group-hover:opacity-90"
+              }`}
+            />
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("bride")}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            className={`group relative pb-3 text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.08em] transition-colors duration-300 ${
               activeTab === "bride"
-                ? "bg-[#f7f0ff] text-[color:var(--ink)] shadow-sm"
-                : "text-[color:var(--ink)] hover:text-[color:var(--ink)]"
+                ? "text-[#b59bc7]"
+                : "text-[#ababab] hover:text-[#8f8f8f]"
             }`}
           >
             新婦
+            <span
+              aria-hidden="true"
+              className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full transition-all duration-300 ${
+                activeTab === "bride"
+                  ? "w-[74%] bg-gradient-to-r from-[#cfbfdd] via-[#b59bc7] to-[#cfbfdd] opacity-100"
+                  : "w-[56%] bg-[#b6b6b6] opacity-75 group-hover:opacity-90"
+              }`}
+            />
           </button>
         </div>
-        <p className="text-xs text-[color:var(--subtle)]">スクロールで写真が続きます</p>
       </div>
 
       {activeImages.length ? (
@@ -231,57 +302,7 @@ function GalleryPage() {
         </div>
       )}
 
-      {hasSelection && selectedImage ? (
-        <div
-          className="fixed inset-0 z-50 bg-white"
-          onClick={() => setSelectedIndex(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="全画面画像"
-        >
-          <div
-            className="relative flex h-full w-full items-center justify-center px-3 py-16 sm:px-8"
-            onClick={(event) => event.stopPropagation()}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <button
-              type="button"
-              onClick={() => setSelectedIndex(null)}
-              className="absolute left-3 top-3 rounded-full bg-black/70 px-3 py-2 text-xl leading-none text-white transition hover:bg-black/85 sm:left-5 sm:top-5"
-              aria-label="閉じる"
-            >
-              ✕
-            </button>
-            {activeImages.length > 1 ? (
-              <button
-                type="button"
-                onClick={showPrev}
-                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/70 px-3 py-2 text-2xl leading-none text-white transition hover:bg-black/85 sm:left-5"
-                aria-label="前の写真"
-              >
-                ‹
-              </button>
-            ) : null}
-            <img
-              src={selectedImage}
-              alt={`${activeLabel}ギャラリー ${selectedIndex + 1}`}
-              className="max-h-full max-w-full object-contain select-none"
-              draggable="false"
-            />
-            {activeImages.length > 1 ? (
-              <button
-                type="button"
-                onClick={showNext}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/70 px-3 py-2 text-2xl leading-none text-white transition hover:bg-black/85 sm:right-5"
-                aria-label="次の写真"
-              >
-                ›
-              </button>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
+      {typeof window !== "undefined" ? fullscreenModal : null}
     </SectionShell>
   );
 }

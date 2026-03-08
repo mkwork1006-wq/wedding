@@ -67,22 +67,24 @@ export const courseMenu = [
 
 export const profiles = {
   groom: {
-    name: "ともや",
-    birthday: "1992年4月12日",
-    bloodType: "A型",
-    hometown: "東京都世田谷区",
-    job: "空間デザイナー",
-    likes: ["建築散歩", "スペシャルティコーヒー", "朝の読書", "キャンドル", "雨音"],
-    message: "今日という光景を皆さんと分け合えることがとても嬉しいです。"
+    name: "山下智也",
+    birthday: "1998/1/12",
+    hometown: "東京都日野市",
+    likes: ["人"],
+    partnerFavoriteLabel: "新婦の好きなところ",
+    partnerFavorite: "作成中",
+    messageLabel: "新郎からひと言",
+    message: "作成中"
   },
   bride: {
-    name: "ともみ",
-    birthday: "1994年9月3日",
-    bloodType: "O型",
+    name: "山下友実",
+    birthday: "1997/8/13",
     hometown: "千葉県浦安市",
-    job: "車掌",
-    likes: ["切り花", "駅弁めぐり", "写真", "海辺の散歩", "焼き菓子"],
-    message: "遠くからのご出席に感謝しています。どうぞゆっくり楽しんでください。"
+    likes: ["編み物", "Hello! project", "BEYOOOOONDS", "平井美葉ちゃん", "山﨑愛生ちゃん"],
+    partnerFavoriteLabel: "新郎の好きなところ",
+    partnerFavorite: "優しいところ、笑顔",
+    messageLabel: "新婦からひと言",
+    message: "最後まで楽しんでいってね！"
   }
 };
 

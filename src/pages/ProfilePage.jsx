@@ -46,16 +46,8 @@ function ProfileBlock({ profile, label, image }) {
           </dd>
         </div>
         <div className="space-y-2">
-          <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">血液型</dt>
-          <dd className="text-[1.45rem] font-semibold tracking-[0.08em] md:text-[1.7rem]">{profile.bloodType}</dd>
-        </div>
-        <div className="space-y-2">
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">出身地</dt>
           <dd className="text-base font-semibold tracking-[0.08em] md:text-lg">{profile.hometown}</dd>
-        </div>
-        <div className="space-y-2">
-          <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">仕事</dt>
-          <dd className="text-base font-semibold tracking-[0.08em] md:text-lg">{profile.job}</dd>
         </div>
         <div className="space-y-2">
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">好きなもの</dt>
@@ -66,7 +58,17 @@ function ProfileBlock({ profile, label, image }) {
           </dd>
         </div>
         <div className="space-y-2">
-          <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">みんなに一言</dt>
+          <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">
+            {profile.partnerFavoriteLabel}
+          </dt>
+          <dd className="text-sm leading-relaxed text-[color:var(--ink)] md:text-base">
+            {profile.partnerFavorite}
+          </dd>
+        </div>
+        <div className="space-y-2">
+          <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">
+            {profile.messageLabel}
+          </dt>
           <dd className="text-sm leading-relaxed text-[color:var(--ink)] md:text-base">{profile.message}</dd>
         </div>
       </dl>
@@ -81,7 +83,7 @@ function ProfilePage({ id = "profile", initialProfile = "groom" }) {
   const currentProfile = profileTabs.find((tab) => tab.id === activeProfile) ?? profileTabs[0];
 
   return (
-    <SectionShell id={id} eyebrow="プロフィール">
+    <SectionShell id={id}>
       <div className="mx-auto w-full max-w-[28rem] space-y-6 md:space-y-8">
         <div className="text-center">
           <p className="mb-1 text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ PROFILE</p>
