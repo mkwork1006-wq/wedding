@@ -29,7 +29,7 @@ const menuItems = [
   { id: "gallery", label: "ギャラリー" }
 ];
 
-const PageFallback = () => <div className="h-[45vh] w-full animate-pulse rounded-[22px] border border-[#efeded] bg-[#fafafa]" />;
+const PageFallback = () => <div className="h-[45vh] w-full animate-pulse rounded-[14px] border border-[#efeded] bg-[#fafafa]" />;
 
 const MenuPanel = ({ open, onSelect, onClose }) => (
   <div
@@ -39,7 +39,7 @@ const MenuPanel = ({ open, onSelect, onClose }) => (
         : "pointer-events-none translate-y-0 scale-95 opacity-0"
     }`}
   >
-    <div className="relative rounded-[2rem] border-[3px] border-[#b59bc7] bg-[#f9f5fc]/95 px-6 pb-7 pt-8 shadow-[0_22px_50px_rgba(115,85,136,0.24)] backdrop-blur-md">
+    <div className="relative rounded-[14px] border-[3px] border-[#b59bc7] bg-[#f9f5fc]/95 px-6 pb-7 pt-8 shadow-[0_22px_50px_rgba(115,85,136,0.24)] backdrop-blur-md">
       <button
         type="button"
         onClick={onClose}
@@ -71,7 +71,7 @@ const MenuPanel = ({ open, onSelect, onClose }) => (
             key={id}
             type="button"
             onClick={() => onSelect(id)}
-            className="rounded-2xl border border-[#ccb7de] bg-white/85 px-3 py-3 text-left text-sm font-semibold tracking-[0.06em] transition duration-200 hover:-translate-y-0.5 hover:border-[#b59bc7] hover:bg-white"
+            className="rounded-[12px] border border-[#ccb7de] bg-white/85 px-3 py-3 text-left text-sm font-semibold tracking-[0.06em] transition duration-200 hover:-translate-y-0.5 hover:border-[#b59bc7] hover:bg-white"
           >
             {label}
           </button>
@@ -104,7 +104,7 @@ const PasswordGate = ({ onUnlock }) => {
       <div className="pointer-events-none absolute inset-x-0 top-[-180px] h-[340px] bg-[radial-gradient(circle_at_top,rgba(130,130,130,0.08),transparent_62%)]" />
       <div className="pointer-events-none absolute inset-y-0 right-[-200px] w-[280px] bg-[radial-gradient(circle_at_center,rgba(120,120,120,0.05),transparent_55%)]" />
       <div className="relative mx-auto flex min-h-[80vh] w-full max-w-xl items-center justify-center">
-        <div className="w-full rounded-3xl border border-[#efeded] bg-white/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur">
+        <div className="w-full rounded-[14px] border border-[#efeded] bg-white/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur">
           <p className="text-xs uppercase tracking-[0.45em] text-[color:var(--subtle)]">tomotomo wedding</p>
           <h1 className="mt-3 text-2xl font-semibold md:text-3xl">ご招待ゲスト専用ページ</h1>
           <p className="mt-3 text-sm leading-relaxed text-[color:var(--subtle)]">
@@ -155,6 +155,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activePage, setActivePage] = useState("hero");
   const isTopPage = activePage === "hero";
+  const needsWideHeaderGap = ["seating", "courses", "profile", "gallery"].includes(activePage);
   const menuLayerRef = useRef(null);
 
   const ActivePage = pages.find((page) => page.id === activePage)?.component ?? TopPage;
@@ -215,9 +216,14 @@ function App() {
             {isTopPage ? (
               <div className="h-12" />
             ) : (
-              <p className="min-w-0 flex-1 whitespace-nowrap text-[clamp(0.875rem,2.6vw,1.7rem)] font-medium leading-[1.25] tracking-[0.02em] text-[#b59bc7]">
+              <button
+                type="button"
+                onClick={() => handleSelect("hero")}
+                className="min-w-0 flex-1 whitespace-nowrap text-left text-[clamp(0.875rem,2.6vw,1.7rem)] font-medium leading-[1.25] tracking-[0.02em] text-[#b59bc7] transition hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b59bc7] focus-visible:ring-offset-2"
+                aria-label="トップページへ戻る"
+              >
                 Tomoya＆Tomomi Wedding
-              </p>
+              </button>
             )}
             <button
               type="button"
@@ -241,7 +247,7 @@ function App() {
         <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(130,130,130,0.06),transparent_55%)]" />
         <div
           className={`relative mx-auto max-w-6xl space-y-12 px-6 pb-14 md:px-10 ${
-            isTopPage ? "pt-0" : "pt-24 md:pt-28"
+            isTopPage ? "pt-0" : needsWideHeaderGap ? "pt-28 md:pt-32" : "pt-24 md:pt-28"
           }`}
         >
           <Suspense fallback={<PageFallback />}>

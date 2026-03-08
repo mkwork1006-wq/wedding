@@ -411,7 +411,7 @@ function GalleryPage() {
                   setSlideMotion(null);
                   setSelectedIndex(index % activeImages.length);
                 }}
-                className={`group relative aspect-square w-full overflow-hidden rounded-2xl border border-[#f0efed] bg-[#fafafa] shadow-sm transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
+                className={`group relative aspect-square w-full overflow-hidden rounded-[14px] border border-[#f0efed] bg-[#fafafa] shadow-sm transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
                   item.reveal ? "animate-gallery-reveal" : ""
                 }`}
               >
@@ -430,7 +430,7 @@ function GalleryPage() {
           <div ref={sentinelRef} className="h-10" aria-hidden="true" />
         </>
       ) : (
-        <div className="rounded-2xl border border-[#efeded] bg-[#fafafa] px-6 py-10 text-sm text-[color:var(--muted)]">
+        <div className="rounded-[14px] border border-[#efeded] bg-[#fafafa] px-6 py-10 text-sm text-[color:var(--muted)]">
           ただいま写真を準備中です。しばらくお待ちください。
         </div>
       )}

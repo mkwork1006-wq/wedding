@@ -78,8 +78,8 @@ function ProfileBlock({ profile, label, image, isBride }) {
       </dl>
 
       {isBride ? (
-        <section className="mx-auto w-full overflow-hidden rounded-[1.8rem] bg-[color:var(--ink)] p-3 text-left text-white shadow-[0_16px_30px_rgba(179,155,199,0.26)]">
-          <div className="grid grid-cols-[44%_1fr] items-stretch gap-4 rounded-[1.4rem]">
+        <section className="mx-auto w-full overflow-hidden rounded-[14px] bg-[color:var(--ink)] p-3 text-left text-white shadow-[0_16px_30px_rgba(179,155,199,0.26)]">
+          <div className="grid grid-cols-[44%_1fr] items-stretch gap-4 rounded-[10px]">
             <div className="mx-auto aspect-[3/4] w-[90%] overflow-hidden bg-white">
               <img
                 src={bearPhoto}

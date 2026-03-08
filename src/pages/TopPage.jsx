@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { SurfaceCard } from "../components/ui";
 import hanatabaImage from "../assets/images/etc/hanataba.png";
 
 const topImages = Object.entries(
@@ -178,9 +177,8 @@ function TopPage({ onNavigate }) {
 
   return (
     <section className="space-y-7 md:space-y-8" id="hero">
-      <SurfaceCard
-        tone="plain"
-        className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden rounded-none !border-0 p-0 !shadow-none"
+      <div
+        className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden p-0"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onFocusCapture={() => setIsPaused(true)}
@@ -220,7 +218,7 @@ function TopPage({ onNavigate }) {
         ) : (
           <div className="h-[570px] w-full bg-[#f2f4f8] md:h-[670px]" />
         )}
-      </SurfaceCard>
+      </div>
       <div className="mx-auto w-full px-2 sm:px-3">
         {totalSlides > 1 ? (
           <div className="relative z-20 mb-4 flex items-center justify-center gap-3">
@@ -287,7 +285,7 @@ function TopPage({ onNavigate }) {
           />
         </div>
       </div>
-      <div className="mx-auto mt-[30px] grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
+      <div className="mx-auto !mt-[50px] grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
         {quickLinks.map(({ id, label, image }) => (
           <div key={id} className="flex flex-col items-center gap-2">
             <button

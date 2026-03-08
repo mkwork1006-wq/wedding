@@ -180,24 +180,27 @@ function SeatingPage() {
         <label htmlFor="guest-search" className="sr-only">
           お名前検索
         </label>
-        <div className="relative">
-          <input
-            id="guest-search"
-            type="text"
-            value={searchText}
-            onChange={(event) => setSearchText(event.target.value)}
-            placeholder="ご氏名を漢字でご入力ください"
-            className="h-14 w-full rounded-2xl border-[3px] border-[#b59bc7] bg-white px-5 py-0 pr-16 text-2xl leading-[3.5rem] text-[#b59bc7] outline-none transition placeholder:text-lg placeholder:leading-[3.5rem] placeholder:text-[#ccb7d9] focus:border-[#b59bc7] focus:ring-2 focus:ring-[#e2d8ea]"
-          />
-          <span
-            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#b59bc7]"
-            aria-hidden="true"
-          >
-            <svg viewBox="0 0 24 24" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <circle cx="11" cy="11" r="7.2" />
-              <path d="M16.3 16.3L21 21" strokeLinecap="round" />
-            </svg>
-          </span>
+        <p className="px-1 text-[10px] tracking-[0.18em] text-[#c4b2cf]">テーブル検索</p>
+        <div className="overflow-hidden rounded-[8px] border-[2px] border-[#b59bc7] bg-white shadow-[0_10px_22px_rgba(181,155,199,0.12)] transition duration-300 focus-within:shadow-[0_14px_30px_rgba(181,155,199,0.2)]">
+          <div className="flex items-stretch">
+            <input
+              id="guest-search"
+              type="text"
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+              placeholder="ご氏名を漢字でご入力ください"
+              className="h-12 w-full flex-1 border-none bg-white px-4 text-[17px] font-semibold tracking-[0.03em] text-[#b59bc7] outline-none placeholder:text-[15px] placeholder:font-medium placeholder:tracking-[0.04em] placeholder:text-[#ccb7d9]"
+            />
+            <span
+              className="pointer-events-none inline-flex h-12 w-12 shrink-0 items-center justify-center border-l border-[#b59bc7] bg-[#b59bc7] text-white"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <circle cx="11" cy="11" r="7.2" />
+                <path d="M16.3 16.3L21 21" strokeLinecap="round" />
+              </svg>
+            </span>
+          </div>
         </div>
 
         {normalizedQuery ? (
@@ -210,7 +213,7 @@ function SeatingPage() {
                 {filteredGuests.map((guest) => (
                   <li
                     key={guest.name}
-                    className="flex items-center justify-between gap-3 rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-3 shadow-[0_8px_20px_rgba(181,155,199,0.12)] transition duration-200 hover:-translate-y-0.5 hover:border-[#b59bc7]"
+                    className="flex items-center justify-between gap-3 rounded-[14px] border border-[#d9c8e4] bg-white/95 px-4 py-3 shadow-[0_8px_20px_rgba(181,155,199,0.12)] transition duration-200 hover:-translate-y-0.5 hover:border-[#b59bc7]"
                   >
                     <p className="text-[clamp(1.05rem,4.1vw,1.4rem)] font-medium tracking-[0.02em] text-[#b59bc7]">
                       {guest.name}
@@ -223,12 +226,12 @@ function SeatingPage() {
               </ul>
             </div>
           ) : (
-            <p className="rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
+            <p className="rounded-[14px] border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
               該当するお名前が見つかりませんでした。
             </p>
           )
         ) : (
-          <p className="rounded-2xl border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
+          <p className="rounded-[14px] border border-[#d9c8e4] bg-white/95 px-4 py-4 text-base text-[#b59bc7] shadow-[0_8px_20px_rgba(181,155,199,0.08)]">
             ご氏名を入力するとテーブル名が表示されます。
           </p>
         )}

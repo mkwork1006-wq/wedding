@@ -1,17 +1,21 @@
 export function SectionShell({ id, eyebrow, title, description, children }) {
+  const hasHeading = Boolean(eyebrow || title || description);
+
   return (
     <section id={id} className="space-y-5">
-      <div className="space-y-2">
-        {eyebrow ? (
-          <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.48em] text-[color:var(--subtle)]">
-            <span className="h-px w-12 bg-[#e8e4e2] sm:w-20" />
-            <span>{eyebrow}</span>
-            <span className="hidden h-px flex-1 max-w-[120px] bg-[#e8e4e2] sm:block" />
-          </div>
-        ) : null}
-        {title ? <h2 className="text-xl font-semibold text-[color:var(--ink)] md:text-2xl">{title}</h2> : null}
-        {description ? <p className="text-sm text-[color:var(--muted)]">{description}</p> : null}
-      </div>
+      {hasHeading ? (
+        <div className="space-y-2">
+          {eyebrow ? (
+            <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.48em] text-[color:var(--subtle)]">
+              <span className="h-px w-12 bg-[#e8e4e2] sm:w-20" />
+              <span>{eyebrow}</span>
+              <span className="hidden h-px flex-1 max-w-[120px] bg-[#e8e4e2] sm:block" />
+            </div>
+          ) : null}
+          {title ? <h2 className="text-xl font-semibold text-[color:var(--ink)] md:text-2xl">{title}</h2> : null}
+          {description ? <p className="text-sm text-[color:var(--muted)]">{description}</p> : null}
+        </div>
+      ) : null}
       {children}
     </section>
   );
@@ -28,7 +32,7 @@ const toneStyles = {
 export function SurfaceCard({ tone = "plain", className = "", children }) {
   const toneClass = toneStyles[tone] ?? toneStyles.plain;
   return (
-    <div className={`group rounded-[22px] transition duration-300 ${toneClass} ${className}`}>
+    <div className={`group rounded-[14px] transition duration-300 ${toneClass} ${className}`}>
       {children}
     </div>
   );
