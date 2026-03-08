@@ -299,6 +299,7 @@ function GalleryPage() {
                           alt={`${activeLabel}ギャラリー ${slideMotion.from + 1}`}
                           className="max-h-full max-w-full rounded-md object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)] select-none"
                           draggable="false"
+                          decoding="async"
                         />
                       </div>
                       <div
@@ -316,6 +317,7 @@ function GalleryPage() {
                           alt={`${activeLabel}ギャラリー ${slideMotion.to + 1}`}
                           className="max-h-full max-w-full rounded-md object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)] select-none"
                           draggable="false"
+                          decoding="async"
                         />
                       </div>
                     </>
@@ -326,6 +328,7 @@ function GalleryPage() {
                         alt={`${activeLabel}ギャラリー ${selectedIndex + 1}`}
                         className="max-h-full max-w-full rounded-md object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)] select-none"
                         draggable="false"
+                        decoding="async"
                       />
                     </div>
                   )}
@@ -362,45 +365,38 @@ function GalleryPage() {
     <SectionShell id="gallery">
       <div className="space-y-4">
         <p className="text-center text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ GALLERY</p>
-        <div className="mx-auto grid w-full max-w-[24rem] grid-cols-2 gap-5 px-1 text-center">
-          <button
-            type="button"
-            onClick={() => setActiveTab("groom")}
-            className={`group relative pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
-              activeTab === "groom"
-                ? "text-[#b59bc7]"
-                : "text-[#ababab] hover:text-[#8f8f8f]"
-            }`}
-          >
-            groom
-            <span
-              aria-hidden="true"
-              className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full transition-all duration-300 ${
+        <div className="mx-auto w-full max-w-[24rem] px-1 text-center">
+          <div className="relative flex gap-5">
+            <button
+              type="button"
+              onClick={() => setActiveTab("groom")}
+              className={`relative flex-1 pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
                 activeTab === "groom"
-                  ? "w-[74%] bg-gradient-to-r from-[#cfbfdd] via-[#b59bc7] to-[#cfbfdd] opacity-100"
-                  : "w-[56%] bg-[#b6b6b6] opacity-75 group-hover:opacity-90"
+                  ? "text-[#b59bc7]"
+                  : "text-[#ababab] hover:text-[#8f8f8f]"
               }`}
-            />
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("bride")}
-            className={`group relative pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
-              activeTab === "bride"
-                ? "text-[#b59bc7]"
-                : "text-[#ababab] hover:text-[#8f8f8f]"
-            }`}
-          >
-            bride
+            >
+              groom
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("bride")}
+              className={`relative flex-1 pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
+                activeTab === "bride"
+                  ? "text-[#b59bc7]"
+                  : "text-[#ababab] hover:text-[#8f8f8f]"
+              }`}
+            >
+              bride
+            </button>
             <span
               aria-hidden="true"
-              className={`absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full transition-all duration-300 ${
-                activeTab === "bride"
-                  ? "w-[74%] bg-gradient-to-r from-[#cfbfdd] via-[#b59bc7] to-[#cfbfdd] opacity-100"
-                  : "w-[56%] bg-[#b6b6b6] opacity-75 group-hover:opacity-90"
-              }`}
+              className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-[calc((100%-1.25rem)/2)] rounded-full bg-[#b59bc7] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                transform: activeTab === "groom" ? "translateX(0)" : "translateX(calc(100% + 1.25rem))"
+              }}
             />
-          </button>
+          </div>
         </div>
       </div>
 
@@ -424,6 +420,8 @@ function GalleryPage() {
                   alt={`${activeLabel}ギャラリー ${index + 1}`}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   loading="lazy"
+                  fetchPriority="low"
+                  decoding="async"
                 />
                 <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
               </button>

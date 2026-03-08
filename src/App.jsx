@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import TopPage from "./pages/TopPage";
-import SeatingPage from "./pages/SeatingPage";
-import CoursesPage from "./pages/CoursesPage";
-import ProfilePage from "./pages/ProfilePage";
-import GalleryPage from "./pages/GalleryPage";
-import FaqPage from "./pages/FaqPage";
-import TempPage from "./pages/TempPage";
+
+const SeatingPage = lazy(() => import("./pages/SeatingPage"));
+const CoursesPage = lazy(() => import("./pages/CoursesPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const GalleryPage = lazy(() => import("./pages/GalleryPage"));
+const FaqPage = lazy(() => import("./pages/FaqPage"));
+const TempPage = lazy(() => import("./pages/TempPage"));
 
 const PASSWORD = "R80329";
 const AUTH_STORAGE_KEY = "tomotomo-wedding-auth";
@@ -27,6 +28,8 @@ const menuItems = [
   { id: "profile", label: "プロフィール" },
   { id: "gallery", label: "ギャラリー" }
 ];
+
+const PageFallback = () => <div className="h-[45vh] w-full animate-pulse rounded-[22px] border border-[#efeded] bg-[#fafafa]" />;
 
 const MenuPanel = ({ open, onSelect, onClose }) => (
   <div
@@ -241,9 +244,11 @@ function App() {
             isTopPage ? "pt-0" : "pt-24 md:pt-28"
           }`}
         >
-          <div key={activePage} className="animate-fade">
-            <ActivePage onNavigate={handleSelect} />
-          </div>
+          <Suspense fallback={<PageFallback />}>
+            <div key={activePage} className="animate-fade">
+              <ActivePage onNavigate={handleSelect} />
+            </div>
+          </Suspense>
         </div>
       </main>
     </div>

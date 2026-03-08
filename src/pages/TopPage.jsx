@@ -168,6 +168,7 @@ function TopPage({ onNavigate }) {
               src={selectedMemoryImage}
               alt={`思い出の写真 ${selectedMemoryIndex + 1}（拡大）`}
               className="max-h-[82vh] w-full bg-white object-contain"
+              decoding="async"
             />
           </div>
         </div>,
@@ -205,6 +206,9 @@ function TopPage({ onNavigate }) {
                   index === activeIndex ? "opacity-100" : "opacity-0"
                 }`}
                 aria-hidden={index !== activeIndex}
+                loading={index === activeIndex ? "eager" : "lazy"}
+                fetchPriority={index === activeIndex ? "high" : "low"}
+                decoding="async"
               />
             ))}
             <div className="pointer-events-none absolute left-6 top-1/2 z-20 -translate-y-1/2 md:left-10">
@@ -258,6 +262,8 @@ function TopPage({ onNavigate }) {
                       alt={`思い出の写真 ${(index % memoryImages.length) + 1}`}
                       className="h-[220px] w-auto max-w-none object-cover"
                       loading="lazy"
+                      fetchPriority="low"
+                      decoding="async"
                     />
                   </button>
                 ))}
@@ -277,6 +283,7 @@ function TopPage({ onNavigate }) {
             alt="花束の装飾"
             className="pointer-events-none absolute -bottom-[24px] right-[-22px] z-20 w-[72px] sm:-bottom-[40px] sm:right-[-18px] sm:w-[90px]"
             loading="lazy"
+            decoding="async"
           />
         </div>
       </div>
@@ -296,6 +303,8 @@ function TopPage({ onNavigate }) {
                     alt={`${label}のイメージ`}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     loading="lazy"
+                    fetchPriority="low"
+                    decoding="async"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-[#f4f5f8]">

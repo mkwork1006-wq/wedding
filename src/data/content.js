@@ -77,10 +77,10 @@ export const profiles = {
     message: "皆さんのおかげで今の僕があります\n存分に楽しんでください！"
   },
   bride: {
-    name: "山下友実",
+    name: "神谷友実",
     birthday: "1997/8/13",
     hometown: "千葉県浦安市",
-    likes: ["編み物", "Hello! project", "BEYOOOOONDS", "平井美葉ちゃん", "山﨑愛生ちゃん"],
+    likes: ["編み物", "映画", "Hello! project", "BEYOOOOONDS", "平井美葉ちゃん", "山﨑愛生ちゃん"],
     partnerFavoriteLabel: "新郎の好きなところ",
     partnerFavorite: "優しいところ、笑顔",
     messageLabel: "新婦からひと言",

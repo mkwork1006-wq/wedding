@@ -163,6 +163,7 @@ function SeatingPage() {
             alt="席次表画像"
             className="h-auto w-full object-contain"
             loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className="flex aspect-[4/3] w-full items-center justify-center px-4">
@@ -254,6 +255,7 @@ function SeatingPage() {
                 src={seatingImage}
                 alt="席次表画像（拡大）"
                 className="max-h-[82vh] w-full border border-[#b59bc7] bg-white object-contain"
+                decoding="async"
               />
             ) : (
               <div className="flex min-h-[60vh] w-full items-center justify-center border border-[#b59bc7] bg-white px-4">
