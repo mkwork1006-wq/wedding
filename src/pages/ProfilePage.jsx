@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { profiles } from "../data/content";
-import groomPhoto from "../assets/images/profile/tomoya_profile.png";
-import bridePhoto from "../assets/images/profile/tomomi_profile.png";
+import groomPhoto from "../assets/images/profile/groom_profile.jpg";
+import bridePhoto from "../assets/images/profile/bride_profile.jpg";
 import { SectionShell } from "../components/ui";
 
 const profileTabs = [
   {
     id: "groom",
-    label: "新郎",
+    label: "groom",
     profile: profiles.groom,
     image: groomPhoto
   },
   {
     id: "bride",
-    label: "新婦",
+    label: "bride",
     profile: profiles.bride,
     image: bridePhoto
   }
@@ -22,11 +22,11 @@ const profileTabs = [
 function ProfileBlock({ profile, label, image }) {
   return (
     <div className="mx-auto w-full max-w-[26rem] animate-fade space-y-8 pb-8 text-center md:space-y-10">
-      <div className="mx-auto w-full max-w-[15.5rem] md:max-w-[18rem]">
+      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <img
           src={image}
           alt={`${label}のプロフィール写真`}
-          className="h-auto w-full object-contain"
+          className="h-auto w-full object-cover object-center"
           loading="lazy"
         />
       </div>
@@ -61,7 +61,7 @@ function ProfileBlock({ profile, label, image }) {
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">
             {profile.partnerFavoriteLabel}
           </dt>
-          <dd className="text-sm leading-relaxed text-[color:var(--ink)] md:text-base">
+          <dd className="whitespace-pre-line text-sm leading-relaxed text-[color:var(--ink)] md:text-base">
             {profile.partnerFavorite}
           </dd>
         </div>
@@ -69,7 +69,9 @@ function ProfileBlock({ profile, label, image }) {
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">
             {profile.messageLabel}
           </dt>
-          <dd className="text-sm leading-relaxed text-[color:var(--ink)] md:text-base">{profile.message}</dd>
+          <dd className="whitespace-pre-line text-sm leading-relaxed text-[color:var(--ink)] md:text-base">
+            {profile.message}
+          </dd>
         </div>
       </dl>
     </div>
@@ -87,7 +89,7 @@ function ProfilePage({ id = "profile", initialProfile = "groom" }) {
       <div className="mx-auto w-full max-w-[28rem] space-y-6 md:space-y-8">
         <div className="text-center">
           <p className="mb-1 text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ PROFILE</p>
-          <div className="inline-flex items-center gap-3 text-[2rem] font-semibold leading-none text-[color:var(--ink)] md:text-[2.2rem]">
+          <div className="inline-flex items-center gap-3 font-['Cormorant_Garamond'] text-[2rem] font-semibold italic leading-none tracking-[0.01em] text-[color:var(--ink)] md:text-[2.2rem]">
             {profileTabs.map((tab, index) => (
               <div key={tab.id} className="inline-flex items-center gap-3">
                 <button
@@ -100,7 +102,7 @@ function ProfilePage({ id = "profile", initialProfile = "groom" }) {
                 >
                   {tab.label}
                 </button>
-                {index === 0 ? <span className="text-[1.6rem] font-medium opacity-70">/</span> : null}
+                {index === 0 ? <span className="text-[1.6rem] opacity-70">/</span> : null}
               </div>
             ))}
           </div>

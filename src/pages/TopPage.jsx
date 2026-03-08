@@ -99,7 +99,7 @@ function TopPage({ onNavigate }) {
   };
 
   return (
-    <section className="space-y-10" id="hero">
+    <section className="space-y-7 md:space-y-8" id="hero">
       <SurfaceCard
         tone="plain"
         className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden rounded-none !border-0 p-0 !shadow-none"
@@ -139,15 +139,17 @@ function TopPage({ onNavigate }) {
         ) : (
           <div className="h-[570px] w-full bg-[#f2f4f8] md:h-[670px]" />
         )}
+      </SurfaceCard>
+      <div className="mx-auto w-full px-2 sm:px-3">
         {totalSlides > 1 ? (
-          <div className="relative z-20 flex items-center justify-center gap-2 bg-white/95 py-5">
+          <div className="relative z-20 mb-4 flex items-center justify-center gap-3">
             {heroSlides.map((slide, index) => (
               <button
                 key={`${slide}-${index}`}
                 type="button"
                 onClick={() => setActiveIndex(index)}
                 className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  index === activeIndex ? "bg-[color:var(--accent)]" : "bg-[#cfd4e4] md:hover:bg-[color:var(--accent)]"
+                  index === activeIndex ? "bg-[color:var(--ink)]" : "bg-[#d6d8e0] md:hover:bg-[color:var(--ink)]"
                 }`}
                 aria-label={`スライド ${index + 1}へ`}
                 aria-current={index === activeIndex ? "true" : undefined}
@@ -155,12 +157,14 @@ function TopPage({ onNavigate }) {
             ))}
           </div>
         ) : null}
-      </SurfaceCard>
-      <div className="space-y-3 text-center">
-        <p className="mb-2 text-5xl font-semibold leading-none text-[color:var(--ink)] md:text-6xl">03/29</p>
-        <p className="mx-auto max-w-4xl text-sm text-[color:var(--muted)] md:text-base">
-          本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。このサイトでは席次表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
-        </p>
+        <div className="border border-[#ececec] bg-[#f3f3f3] px-4 pb-6 pt-5 text-center sm:px-8 sm:pb-8 sm:pt-6">
+          <p className="mt-2 font-['Cormorant_Garamond'] text-[58px] font-semibold italic leading-none tracking-[0.01em] text-[color:var(--ink)] sm:text-[76px]">
+            2026.03.29
+          </p>
+          <p className="mx-auto mt-6 max-w-4xl text-[15px] font-medium leading-8 text-[color:var(--muted)] sm:text-base">
+            本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。<br />このサイトでは席次表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
+          </p>
+        </div>
       </div>
       <div className="mx-auto grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
         {quickLinks.map(({ id, label, image }) => (

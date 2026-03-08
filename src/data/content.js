@@ -70,11 +70,11 @@ export const profiles = {
     name: "山下智也",
     birthday: "1998/1/12",
     hometown: "東京都日野市",
-    likes: ["人"],
+    likes: ["怪談話を聞くこと", "つばきファクトリー", "河西結心"],
     partnerFavoriteLabel: "新婦の好きなところ",
-    partnerFavorite: "作成中",
+    partnerFavorite: "ひとつの事に集中できるところ\n素直なところ",
     messageLabel: "新郎からひと言",
-    message: "作成中"
+    message: "皆さんのおかげで今の僕があります\n存分に楽しんでください！"
   },
   bride: {
     name: "山下友実",

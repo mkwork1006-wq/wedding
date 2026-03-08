@@ -57,7 +57,9 @@ const MenuPanel = ({ open, onSelect, onClose }) => (
       </div>
 
       <div className="mt-6 border-t border-[#d9c8e4] pt-5">
-        <p className="text-[1.95rem] italic leading-none text-[#b59bc7]">Menu</p>
+        <p className="font-['Cormorant_Garamond'] text-[1.95rem] font-semibold italic leading-none tracking-[0.01em] text-[#b59bc7]">
+          Menu
+        </p>
       </div>
 
       <nav className="mt-6 grid grid-cols-2 gap-3 text-[#b59bc7] sm:grid-cols-3">
@@ -96,8 +98,8 @@ const PasswordGate = ({ onUnlock }) => {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white px-6 py-12 text-[color:var(--ink)]">
-      <div className="pointer-events-none absolute inset-x-0 top-[-180px] h-[340px] bg-[radial-gradient(circle_at_top,rgba(11,47,214,0.1),transparent_62%)]" />
-      <div className="pointer-events-none absolute inset-y-0 right-[-200px] w-[280px] bg-[radial-gradient(circle_at_center,rgba(0,20,137,0.05),transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-[-180px] h-[340px] bg-[radial-gradient(circle_at_top,rgba(130,130,130,0.08),transparent_62%)]" />
+      <div className="pointer-events-none absolute inset-y-0 right-[-200px] w-[280px] bg-[radial-gradient(circle_at_center,rgba(120,120,120,0.05),transparent_55%)]" />
       <div className="relative mx-auto flex min-h-[80vh] w-full max-w-xl items-center justify-center">
         <div className="w-full rounded-3xl border border-[#efeded] bg-white/90 p-8 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur">
           <p className="text-xs uppercase tracking-[0.45em] text-[color:var(--subtle)]">tomotomo wedding</p>
@@ -233,8 +235,8 @@ function App() {
       </header>
 
       <main className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(11,47,214,0.08),transparent_55%)]" />
-        <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(0,20,137,0.05),transparent_50%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-[-140px] h-[260px] bg-[radial-gradient(circle_at_top,rgba(130,130,130,0.06),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-y-0 right-[-180px] w-[260px] bg-[radial-gradient(circle_at_center,rgba(120,120,120,0.04),transparent_50%)]" />
         <div
           className={`relative mx-auto max-w-6xl space-y-12 px-6 pb-14 md:px-10 ${
             isTopPage ? "pt-0" : "pt-24 md:pt-28"
