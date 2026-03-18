@@ -445,22 +445,22 @@ function GalleryPage() {
               onClick={(event) => event.stopPropagation()}
             >
               <div
-                className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-4 [touch-action:none]"
+                className="relative flex w-full max-w-5xl flex-col items-center justify-center [touch-action:none]"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 onTouchCancel={handleTouchCancel}
               >
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="absolute -top-12 right-1 z-10 text-[2rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-                  aria-label="閉じる"
-                >
-                  ×
-                </button>
-
                 <div className="relative h-[82vh] w-full overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="absolute right-4 top-4 z-20 text-[2rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                    aria-label="閉じる"
+                  >
+                    ×
+                  </button>
+
                   {slideMotion && outgoingImage && incomingImage ? (
                     <>
                       <div
@@ -513,28 +513,28 @@ function GalleryPage() {
                       />
                     </div>
                   )}
-                </div>
 
-                {activeImages.length > 1 ? (
-                  <div className="flex items-center justify-center gap-12 pb-1">
-                    <button
-                      type="button"
-                      onClick={showPrev}
-                      className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-                      aria-label="前の写真"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      type="button"
-                      onClick={showNext}
-                      className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-                      aria-label="次の写真"
-                    >
-                      ›
-                    </button>
-                  </div>
-                ) : null}
+                  {activeImages.length > 1 ? (
+                    <div className="absolute inset-x-0 bottom-4 z-20 flex items-center justify-center gap-12">
+                      <button
+                        type="button"
+                        onClick={showPrev}
+                        className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                        aria-label="前の写真"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={showNext}
+                        className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                        aria-label="次の写真"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>,
