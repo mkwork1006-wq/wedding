@@ -24,6 +24,8 @@ const IMAGE_BATCH = 12;
 const SWIPE_THRESHOLD = 56;
 const SLIDE_DURATION_MS = 360;
 const EDGE_GUARD_PX = 24;
+const MIN_ZOOM_SCALE = 1;
+const MAX_ZOOM_SCALE = 4;
 
 const createBatch = (tabKey, images, startIndex, count, reveal) =>
   Array.from({ length: count }, (_, index) => {
@@ -36,6 +38,25 @@ const createBatch = (tabKey, images, startIndex, count, reveal) =>
     };
   });
 
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const getTouchDistance = (touches) => {
+  if (touches.length < 2) {
+    return 0;
+  }
+  const [firstTouch, secondTouch] = touches;
+  return Math.hypot(secondTouch.clientX - firstTouch.clientX, secondTouch.clientY - firstTouch.clientY);
+};
+
+const initialGesture = {
+  mode: null,
+  startDistance: 0,
+  startScale: MIN_ZOOM_SCALE,
+  startOffsetX: 0,
+  startOffsetY: 0,
+  startX: 0,
+  startY: 0
+};
+
 function GalleryPage() {
   const [activeTab, setActiveTab] = useState("groom");
   const [items, setItems] = useState(() =>
@@ -43,10 +64,13 @@ function GalleryPage() {
   );
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [slideMotion, setSlideMotion] = useState(null);
+  const [zoomState, setZoomState] = useState({ scale: MIN_ZOOM_SCALE, offsetX: 0, offsetY: 0 });
   const sentinelRef = useRef(null);
   const loadingRef = useRef(false);
   const touchStartXRef = useRef(null);
   const touchStartYRef = useRef(null);
+  const gestureRef = useRef(initialGesture);
+  const activeImageRef = useRef(null);
 
   const activeImages = activeTab === "groom" ? groomSources : brideSources;
   const activeLabel = activeTab === "groom" ? "groom" : "bride";
@@ -54,11 +78,38 @@ function GalleryPage() {
   const selectedImage = hasSelection ? activeImages[selectedIndex] : null;
   const isSliding = slideMotion !== null;
 
+  const clampOffsets = useCallback((offsetX, offsetY, scale) => {
+    const imageElement = activeImageRef.current;
+
+    if (!imageElement || scale <= MIN_ZOOM_SCALE) {
+      return { offsetX: 0, offsetY: 0 };
+    }
+
+    const { clientWidth, clientHeight } = imageElement;
+    const maxOffsetX = Math.max((clientWidth * scale - clientWidth) / 2, 0);
+    const maxOffsetY = Math.max((clientHeight * scale - clientHeight) / 2, 0);
+
+    return {
+      offsetX: clamp(offsetX, -maxOffsetX, maxOffsetX),
+      offsetY: clamp(offsetY, -maxOffsetY, maxOffsetY)
+    };
+  }, []);
+
+  const resetZoom = useCallback(() => {
+    gestureRef.current = initialGesture;
+    setZoomState((prev) =>
+      prev.scale === MIN_ZOOM_SCALE && prev.offsetX === 0 && prev.offsetY === 0
+        ? prev
+        : { scale: MIN_ZOOM_SCALE, offsetX: 0, offsetY: 0 }
+    );
+  }, []);
+
   useEffect(() => {
     const images = activeTab === "groom" ? groomSources : brideSources;
     setSelectedIndex(null);
     setSlideMotion(null);
     loadingRef.current = false;
+    resetZoom();
 
     if (!images.length) {
       setItems([]);
@@ -70,7 +121,7 @@ function GalleryPage() {
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [activeTab]);
+  }, [activeTab, resetZoom]);
 
   useEffect(() => {
     if (!sentinelRef.current) {
@@ -105,7 +156,8 @@ function GalleryPage() {
   const closeModal = useCallback(() => {
     setSlideMotion(null);
     setSelectedIndex(null);
-  }, []);
+    resetZoom();
+  }, [resetZoom]);
 
   const startSlide = useCallback(
     (direction) => {
@@ -160,6 +212,10 @@ function GalleryPage() {
   }, [slideMotion]);
 
   useEffect(() => {
+    resetZoom();
+  }, [resetZoom, selectedIndex]);
+
+  useEffect(() => {
     if (!hasSelection) {
       return undefined;
     }
@@ -191,10 +247,44 @@ function GalleryPage() {
   }, [closeModal, hasSelection, showNext, showPrev]);
 
   const handleTouchStart = (event) => {
+    if (isSliding) {
+      return;
+    }
+
+    if (event.touches.length >= 2) {
+      gestureRef.current = {
+        mode: "pinch",
+        startDistance: getTouchDistance(event.touches),
+        startScale: zoomState.scale,
+        startOffsetX: zoomState.offsetX,
+        startOffsetY: zoomState.offsetY,
+        startX: 0,
+        startY: 0
+      };
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      return;
+    }
+
     const startX = event.touches[0]?.clientX ?? null;
     const startY = event.touches[0]?.clientY ?? null;
 
     if (startX === null || startY === null) {
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      return;
+    }
+
+    if (zoomState.scale > MIN_ZOOM_SCALE) {
+      gestureRef.current = {
+        mode: "pan",
+        startDistance: 0,
+        startScale: zoomState.scale,
+        startOffsetX: zoomState.offsetX,
+        startOffsetY: zoomState.offsetY,
+        startX,
+        startY
+      };
       touchStartXRef.current = null;
       touchStartYRef.current = null;
       return;
@@ -215,6 +305,56 @@ function GalleryPage() {
   };
 
   const handleTouchMove = (event) => {
+    if (gestureRef.current.mode === "pinch" && event.touches.length >= 2) {
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+
+      const distance = getTouchDistance(event.touches);
+      if (!distance || !gestureRef.current.startDistance) {
+        return;
+      }
+
+      const nextScale = clamp(
+        (distance / gestureRef.current.startDistance) * gestureRef.current.startScale,
+        MIN_ZOOM_SCALE,
+        MAX_ZOOM_SCALE
+      );
+      const clampedOffsets = clampOffsets(
+        gestureRef.current.startOffsetX,
+        gestureRef.current.startOffsetY,
+        nextScale
+      );
+
+      setZoomState((prev) =>
+        prev.scale === nextScale &&
+        prev.offsetX === clampedOffsets.offsetX &&
+        prev.offsetY === clampedOffsets.offsetY
+          ? prev
+          : { scale: nextScale, ...clampedOffsets }
+      );
+      return;
+    }
+
+    if (gestureRef.current.mode === "pan" && event.touches.length === 1) {
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+
+      const currentX = event.touches[0]?.clientX ?? gestureRef.current.startX;
+      const currentY = event.touches[0]?.clientY ?? gestureRef.current.startY;
+      const nextOffsetX = gestureRef.current.startOffsetX + (currentX - gestureRef.current.startX);
+      const nextOffsetY = gestureRef.current.startOffsetY + (currentY - gestureRef.current.startY);
+      const clampedOffsets = clampOffsets(nextOffsetX, nextOffsetY, zoomState.scale);
+
+      setZoomState((prev) =>
+        prev.offsetX === clampedOffsets.offsetX && prev.offsetY === clampedOffsets.offsetY
+          ? prev
+          : { ...prev, ...clampedOffsets }
+      );
+      return;
+    }
+
     if (touchStartXRef.current === null || touchStartYRef.current === null) {
       return;
     }
@@ -231,6 +371,36 @@ function GalleryPage() {
   };
 
   const handleTouchEnd = (event) => {
+    if (gestureRef.current.mode === "pinch") {
+      if (event.touches.length === 1 && zoomState.scale > MIN_ZOOM_SCALE) {
+        const remainingTouch = event.touches[0];
+        gestureRef.current = {
+          mode: "pan",
+          startDistance: 0,
+          startScale: zoomState.scale,
+          startOffsetX: zoomState.offsetX,
+          startOffsetY: zoomState.offsetY,
+          startX: remainingTouch.clientX,
+          startY: remainingTouch.clientY
+        };
+        return;
+      }
+
+      gestureRef.current = initialGesture;
+      if (zoomState.scale <= MIN_ZOOM_SCALE + 0.01) {
+        resetZoom();
+      }
+      return;
+    }
+
+    if (gestureRef.current.mode === "pan") {
+      gestureRef.current = initialGesture;
+      if (zoomState.scale <= MIN_ZOOM_SCALE + 0.01) {
+        resetZoom();
+      }
+      return;
+    }
+
     if (touchStartXRef.current === null) {
       return;
     }
@@ -247,6 +417,12 @@ function GalleryPage() {
       return;
     }
     showNext();
+  };
+
+  const handleTouchCancel = () => {
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+    gestureRef.current = initialGesture;
   };
 
   const outgoingImage = slideMotion ? activeImages[slideMotion.from] : null;
@@ -269,10 +445,11 @@ function GalleryPage() {
               onClick={(event) => event.stopPropagation()}
             >
               <div
-                className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-4 [touch-action:pan-y]"
+                className="relative flex w-full max-w-5xl flex-col items-center justify-center gap-4 [touch-action:none]"
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchCancel}
               >
                 <button
                   type="button"
@@ -324,11 +501,15 @@ function GalleryPage() {
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <img
+                        ref={activeImageRef}
                         src={selectedImage}
                         alt={`${activeLabel}ギャラリー ${selectedIndex + 1}`}
-                        className="max-h-full max-w-full rounded-md object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)] select-none"
+                        className="max-h-full max-w-full rounded-md object-contain shadow-[0_20px_60px_rgba(0,0,0,0.5)] select-none transition-transform duration-150 ease-out"
                         draggable="false"
                         decoding="async"
+                        style={{
+                          transform: `translate3d(${zoomState.offsetX}px, ${zoomState.offsetY}px, 0) scale(${zoomState.scale})`
+                        }}
                       />
                     </div>
                   )}
@@ -365,37 +546,29 @@ function GalleryPage() {
     <SectionShell id="gallery">
       <div className="space-y-4">
         <p className="text-center text-[10px] tracking-[0.34em] text-[color:var(--subtle)]">✦ GALLERY</p>
-        <div className="mx-auto w-full max-w-[24rem] px-1 text-center">
-          <div className="relative flex gap-5">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-3 font-['Playfair_Display'] text-[2rem] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] md:text-[2.2rem]">
             <button
               type="button"
               onClick={() => setActiveTab("groom")}
-              className={`relative flex-1 pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
-                activeTab === "groom"
-                  ? "text-[#b59bc7]"
-                  : "text-[#ababab] hover:text-[#8f8f8f]"
+              aria-pressed={activeTab === "groom"}
+              className={`transition duration-200 ${
+                activeTab === "groom" ? "opacity-100" : "opacity-45 hover:opacity-70"
               }`}
             >
               groom
             </button>
+            <span className="text-[1.6rem] opacity-70">/</span>
             <button
               type="button"
               onClick={() => setActiveTab("bride")}
-              className={`relative flex-1 pb-3 font-['Playfair_Display'] text-[clamp(1.95rem,6vw,2.45rem)] font-semibold leading-none tracking-[0.04em] transition-colors duration-300 ${
-                activeTab === "bride"
-                  ? "text-[#b59bc7]"
-                  : "text-[#ababab] hover:text-[#8f8f8f]"
+              aria-pressed={activeTab === "bride"}
+              className={`transition duration-200 ${
+                activeTab === "bride" ? "opacity-100" : "opacity-45 hover:opacity-70"
               }`}
             >
               bride
             </button>
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-[calc((100%-1.25rem)/2)] rounded-full bg-[#b59bc7] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-              style={{
-                transform: activeTab === "groom" ? "translateX(0)" : "translateX(calc(100% + 1.25rem))"
-              }}
-            />
           </div>
         </div>
       </div>

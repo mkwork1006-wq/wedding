@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import hanatabaImage from "../assets/images/etc/hanataba.png";
+import weddingTimelineImage from "../assets/images/etc/Wedding Timeline.png";
 
 const topImages = Object.entries(
   import.meta.glob("../assets/images/top/TOP_*.*", {
@@ -46,6 +47,7 @@ function TopPage({ onNavigate }) {
   });
   const [isPaused, setIsPaused] = useState(false);
   const [selectedMemoryIndex, setSelectedMemoryIndex] = useState(null);
+  const [isTimelineModalOpen, setIsTimelineModalOpen] = useState(false);
   const touchStartXRef = useRef(null);
   const touchMoveXRef = useRef(null);
   const totalSlides = heroSlides.length;
@@ -66,8 +68,10 @@ function TopPage({ onNavigate }) {
     return () => window.clearTimeout(timer);
   }, [activeIndex, isPaused, totalSlides]);
 
+  const isLightboxOpen = selectedMemoryIndex !== null || isTimelineModalOpen;
+
   useEffect(() => {
-    if (selectedMemoryIndex === null) {
+    if (!isLightboxOpen) {
       return undefined;
     }
 
@@ -77,6 +81,7 @@ function TopPage({ onNavigate }) {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setSelectedMemoryIndex(null);
+        setIsTimelineModalOpen(false);
       }
     };
 
@@ -86,7 +91,7 @@ function TopPage({ onNavigate }) {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedMemoryIndex]);
+  }, [isLightboxOpen]);
 
   const moveSlideBy = (direction) => {
     if (totalSlides <= 1) {
@@ -145,6 +150,14 @@ function TopPage({ onNavigate }) {
     setSelectedMemoryIndex(null);
   };
 
+  const openTimelineModal = () => {
+    setIsTimelineModalOpen(true);
+  };
+
+  const closeTimelineModal = () => {
+    setIsTimelineModalOpen(false);
+  };
+
   const memoryModal = selectedMemoryImage
     ? createPortal(
         <div
@@ -166,6 +179,36 @@ function TopPage({ onNavigate }) {
             <img
               src={selectedMemoryImage}
               alt={`思い出の写真 ${selectedMemoryIndex + 1}（拡大）`}
+              className="max-h-[82vh] w-full bg-white object-contain"
+              decoding="async"
+            />
+          </div>
+        </div>,
+        document.body
+      )
+    : null;
+
+  const timelineModal = isTimelineModalOpen
+    ? createPortal(
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-white/90 px-4 py-8 backdrop-blur-sm"
+          onClick={closeTimelineModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="結婚式当日のタイムラインの拡大表示"
+        >
+          <div className="w-full max-w-5xl" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              onClick={closeTimelineModal}
+              className="mb-3 text-3xl leading-none text-[#7c6988] transition hover:text-[#5f4f69] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b59bc7]"
+              aria-label="タイムラインの拡大画像を閉じる"
+            >
+              ×
+            </button>
+            <img
+              src={weddingTimelineImage}
+              alt="結婚式当日のタイムライン（拡大）"
               className="max-h-[82vh] w-full bg-white object-contain"
               decoding="async"
             />
@@ -322,7 +365,25 @@ function TopPage({ onNavigate }) {
           </div>
         ))}
       </div>
+      <section className="mx-auto w-full max-w-5xl px-4 pb-4 pt-12 sm:px-6">
+        <button
+          type="button"
+          onClick={openTimelineModal}
+          className="block w-full transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2"
+          aria-label="結婚式当日のタイムラインを拡大表示"
+        >
+          <img
+            src={weddingTimelineImage}
+            alt="結婚式当日のタイムライン"
+            className="w-full border border-[#ece8e3] bg-white object-contain shadow-[0_20px_60px_rgba(97,82,73,0.08)]"
+            loading="lazy"
+            fetchPriority="low"
+            decoding="async"
+          />
+        </button>
+      </section>
       {memoryModal}
+      {timelineModal}
     </section>
   );
 }
