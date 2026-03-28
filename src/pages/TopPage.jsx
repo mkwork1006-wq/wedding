@@ -53,6 +53,9 @@ function TopPage({ onNavigate }) {
   const [isTimelineModalOpen, setIsTimelineModalOpen] = useState(false);
   const touchStartXRef = useRef(null);
   const touchMoveXRef = useRef(null);
+  const memoryTouchStartXRef = useRef(null);
+  const memoryTouchMovedRef = useRef(false);
+  const memoryResumeTimeoutRef = useRef(null);
   const totalSlides = heroSlides.length;
   const quickLinks = [
     {
@@ -100,6 +103,14 @@ function TopPage({ onNavigate }) {
     };
   }, [isLightboxOpen]);
 
+  useEffect(() => {
+    return () => {
+      if (memoryResumeTimeoutRef.current !== null) {
+        window.clearTimeout(memoryResumeTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const moveSlideBy = (direction) => {
     if (totalSlides <= 1) {
       return;
@@ -145,6 +156,62 @@ function TopPage({ onNavigate }) {
   };
 
   const selectedMemoryImage = selectedMemoryIndex !== null ? memoryImages[selectedMemoryIndex] : null;
+
+  const clearMemoryResumeTimeout = () => {
+    if (memoryResumeTimeoutRef.current !== null) {
+      window.clearTimeout(memoryResumeTimeoutRef.current);
+      memoryResumeTimeoutRef.current = null;
+    }
+  };
+
+  const pauseMemoryMarquee = () => {
+    clearMemoryResumeTimeout();
+    setIsMemoryPaused(true);
+  };
+
+  const resumeMemoryMarqueeLater = (delay = 1400) => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    clearMemoryResumeTimeout();
+    memoryResumeTimeoutRef.current = window.setTimeout(() => {
+      setIsMemoryPaused(false);
+      memoryResumeTimeoutRef.current = null;
+    }, delay);
+  };
+
+  const handleMemoryTouchStart = (event) => {
+    const startX = event.touches[0]?.clientX;
+    memoryTouchStartXRef.current = startX ?? null;
+    memoryTouchMovedRef.current = false;
+    pauseMemoryMarquee();
+  };
+
+  const handleMemoryTouchMove = (event) => {
+    const currentX = event.touches[0]?.clientX;
+    if (memoryTouchStartXRef.current === null || currentX === undefined) {
+      return;
+    }
+
+    if (Math.abs(currentX - memoryTouchStartXRef.current) > 8) {
+      memoryTouchMovedRef.current = true;
+    }
+  };
+
+  const handleMemoryTouchEnd = () => {
+    memoryTouchStartXRef.current = null;
+    resumeMemoryMarqueeLater();
+  };
+
+  const handleMemoryItemClick = (loopIndex) => {
+    if (memoryTouchMovedRef.current) {
+      memoryTouchMovedRef.current = false;
+      return;
+    }
+
+    openMemoryModal(loopIndex);
+  };
 
   const openMemoryModal = (loopIndex) => {
     if (!memoryImages.length) {
@@ -293,12 +360,18 @@ function TopPage({ onNavigate }) {
             </h2>
             <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
               <div
-                className="overflow-hidden px-4 py-1 sm:px-6"
-                onMouseEnter={() => setIsMemoryPaused(true)}
+                className="overflow-x-auto overflow-y-hidden px-4 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6"
+                style={{ WebkitOverflowScrolling: "touch" }}
+                onMouseEnter={pauseMemoryMarquee}
                 onMouseLeave={() => setIsMemoryPaused(false)}
-                onTouchStart={() => setIsMemoryPaused(true)}
-                onTouchEnd={() => setIsMemoryPaused(false)}
-                onTouchCancel={() => setIsMemoryPaused(false)}
+                onTouchStart={handleMemoryTouchStart}
+                onTouchMove={handleMemoryTouchMove}
+                onTouchEnd={handleMemoryTouchEnd}
+                onTouchCancel={handleMemoryTouchEnd}
+                onScroll={() => {
+                  pauseMemoryMarquee();
+                  resumeMemoryMarqueeLater();
+                }}
               >
                 <div
                   className={`flex w-max gap-4 py-1 ${memoryImages.length > 1 ? "animate-memory-marquee" : ""}`}
@@ -311,7 +384,7 @@ function TopPage({ onNavigate }) {
                     <button
                       key={`${image}-${index}`}
                       type="button"
-                      onClick={() => openMemoryModal(index)}
+                      onClick={() => handleMemoryItemClick(index)}
                       className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2"
                       aria-label={`思い出の写真 ${(index % memoryImages.length) + 1} を拡大表示`}
                     >
