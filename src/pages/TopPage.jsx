@@ -501,7 +501,7 @@ function TopPage({ onNavigate }) {
           <img
             src={weddingTimelineImage}
             alt="結婚式当日のタイムライン"
-            className="w-full border border-[#ece8e3] bg-white object-contain shadow-[0_20px_60px_rgba(97,82,73,0.08)]"
+            className="w-full bg-white object-contain"
             loading="lazy"
             fetchPriority="low"
             decoding="async"
