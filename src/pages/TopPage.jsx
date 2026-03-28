@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import hanatabaImage from "../assets/images/etc/hanataba.png";
 import weddingTimelineImage from "../assets/images/etc/Wedding Timeline.png";
@@ -11,6 +11,8 @@ const topImages = Object.entries(
 )
   .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
   .map(([, src]) => src);
+
+const initialHeroIndex = topImages.findIndex((src) => src.includes("TOP_A"));
 
 const memoryImages = Object.entries(
   import.meta.glob("../assets/images/memory/*.{png,jpg,jpeg,webp,avif}", {
@@ -45,7 +47,7 @@ function TopPage({ onNavigate }) {
     if (!heroSlides.length) {
       return 0;
     }
-    return Math.floor(Math.random() * heroSlides.length);
+    return initialHeroIndex >= 0 ? initialHeroIndex : 0;
   });
   const [isPaused, setIsPaused] = useState(false);
   const [selectedMemoryIndex, setSelectedMemoryIndex] = useState(null);
@@ -53,8 +55,10 @@ function TopPage({ onNavigate }) {
   const touchStartXRef = useRef(null);
   const touchMoveXRef = useRef(null);
   const memoryScrollerRef = useRef(null);
+  const memoryTrackRef = useRef(null);
   const memoryFrameRef = useRef(null);
   const memoryLastFrameTimeRef = useRef(null);
+  const memoryAlignFrameRef = useRef(null);
   const memoryPauseUntilRef = useRef(0);
   const memoryTouchStartXRef = useRef(null);
   const memoryTouchMovedRef = useRef(false);
@@ -83,48 +87,119 @@ function TopPage({ onNavigate }) {
 
   const isLightboxOpen = selectedMemoryIndex !== null || isTimelineModalOpen;
 
-  useEffect(() => {
+  const getMemorySegmentWidth = useCallback(() => {
     const scroller = memoryScrollerRef.current;
-    if (!scroller || memoryImages.length <= 1) {
-      return undefined;
+    const track = memoryTrackRef.current;
+    if (!scroller || !track || memoryImages.length <= 1) {
+      return 0;
     }
 
-    const alignToMiddle = () => {
-      const segmentWidth = scroller.scrollWidth / 3;
-      if (segmentWidth > 0) {
-        scroller.scrollLeft = segmentWidth;
-      }
-    };
+    const segmentWidth = track.scrollWidth / 3;
+    if (!Number.isFinite(segmentWidth) || segmentWidth <= 0) {
+      return 0;
+    }
 
-    const frame = window.requestAnimationFrame(alignToMiddle);
-    window.addEventListener("resize", alignToMiddle);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("resize", alignToMiddle);
-    };
+    return segmentWidth;
   }, []);
 
+  const normalizeMemoryScroll = useCallback(() => {
+    const scroller = memoryScrollerRef.current;
+    const segmentWidth = getMemorySegmentWidth();
+    if (!scroller || !segmentWidth) {
+      return 0;
+    }
+
+    if (scroller.scrollLeft <= segmentWidth * 0.5) {
+      scroller.scrollLeft += segmentWidth;
+    } else if (scroller.scrollLeft >= segmentWidth * 1.5) {
+      scroller.scrollLeft -= segmentWidth;
+    }
+
+    return segmentWidth;
+  }, [getMemorySegmentWidth]);
+
+  const scheduleMemoryAlign = useCallback(
+    (preserveProgress = true) => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      if (memoryAlignFrameRef.current !== null) {
+        window.cancelAnimationFrame(memoryAlignFrameRef.current);
+      }
+
+      memoryAlignFrameRef.current = window.requestAnimationFrame(() => {
+        memoryAlignFrameRef.current = window.requestAnimationFrame(() => {
+          const scroller = memoryScrollerRef.current;
+          const segmentWidth = getMemorySegmentWidth();
+          if (!scroller || !segmentWidth) {
+            return;
+          }
+
+          if (!preserveProgress || scroller.scrollLeft <= 0) {
+            scroller.scrollLeft = segmentWidth;
+            return;
+          }
+
+          normalizeMemoryScroll();
+        });
+      });
+    },
+    [getMemorySegmentWidth, normalizeMemoryScroll]
+  );
+
+  useEffect(() => {
+    const scroller = memoryScrollerRef.current;
+    const track = memoryTrackRef.current;
+    if (!scroller || !track || memoryImages.length <= 1) {
+      return undefined;
+    }
+
+    const handleLayoutChange = () => {
+      scheduleMemoryAlign(scroller.scrollLeft > 0);
+    };
+
+    scheduleMemoryAlign(false);
+
+    const resizeObserver =
+      typeof window !== "undefined" && typeof window.ResizeObserver === "function"
+        ? new window.ResizeObserver(handleLayoutChange)
+        : null;
+
+    resizeObserver?.observe(scroller);
+    resizeObserver?.observe(track);
+
+    const images = Array.from(track.querySelectorAll("img"));
+    images.forEach((image) => {
+      if (image.complete) {
+        return;
+      }
+
+      image.addEventListener("load", handleLayoutChange);
+      image.addEventListener("error", handleLayoutChange);
+    });
+
+    window.addEventListener("resize", handleLayoutChange);
+
+    return () => {
+      if (memoryAlignFrameRef.current !== null) {
+        window.cancelAnimationFrame(memoryAlignFrameRef.current);
+      }
+
+      resizeObserver?.disconnect();
+      images.forEach((image) => {
+        image.removeEventListener("load", handleLayoutChange);
+        image.removeEventListener("error", handleLayoutChange);
+      });
+      window.removeEventListener("resize", handleLayoutChange);
+    };
+  }, [scheduleMemoryAlign]);
+
   useEffect(() => {
     const scroller = memoryScrollerRef.current;
     if (!scroller || memoryImages.length <= 1) {
       return undefined;
     }
-
-    const normalizeMemoryScroll = () => {
-      const segmentWidth = scroller.scrollWidth / 3;
-      if (!segmentWidth) {
-        return 0;
-      }
-
-      if (scroller.scrollLeft <= segmentWidth * 0.5) {
-        scroller.scrollLeft += segmentWidth;
-      } else if (scroller.scrollLeft >= segmentWidth * 1.5) {
-        scroller.scrollLeft -= segmentWidth;
-      }
-
-      return segmentWidth;
-    };
 
     const tick = (timestamp) => {
       if (memoryLastFrameTimeRef.current === null) {
@@ -156,7 +231,7 @@ function TopPage({ onNavigate }) {
       memoryFrameRef.current = null;
       memoryLastFrameTimeRef.current = null;
     };
-  }, [isLightboxOpen]);
+  }, [isLightboxOpen, normalizeMemoryScroll]);
 
   useEffect(() => {
     if (!isLightboxOpen) {
@@ -232,24 +307,6 @@ function TopPage({ onNavigate }) {
       return;
     }
     memoryPauseUntilRef.current = window.performance.now() + duration;
-  };
-
-  const normalizeMemoryScroll = () => {
-    const scroller = memoryScrollerRef.current;
-    if (!scroller || memoryImages.length <= 1) {
-      return;
-    }
-
-    const segmentWidth = scroller.scrollWidth / 3;
-    if (!segmentWidth) {
-      return;
-    }
-
-    if (scroller.scrollLeft <= segmentWidth * 0.5) {
-      scroller.scrollLeft += segmentWidth;
-    } else if (scroller.scrollLeft >= segmentWidth * 1.5) {
-      scroller.scrollLeft -= segmentWidth;
-    }
   };
 
   const handleMemoryTouchStart = (event) => {
@@ -448,7 +505,7 @@ function TopPage({ onNavigate }) {
                 onTouchCancel={handleMemoryTouchEnd}
                 onScroll={normalizeMemoryScroll}
               >
-                <div className="flex w-max gap-4">
+                <div ref={memoryTrackRef} className="flex w-max gap-4">
                   {memoryLoopImages.map((image, index) => (
                     <button
                       key={`${image}-${index}`}
@@ -461,7 +518,7 @@ function TopPage({ onNavigate }) {
                         src={image}
                         alt={`思い出の写真 ${(index % memoryImages.length) + 1}`}
                         className="h-[220px] w-auto max-w-none object-cover"
-                        loading="lazy"
+                        loading="eager"
                         fetchPriority="low"
                         decoding="async"
                       />

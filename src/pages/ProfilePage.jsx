@@ -35,7 +35,7 @@ function ProfileBlock({ profile, label, image, isBride }) {
 
       <div className="space-y-3">
         <p className="text-[0.72rem] font-semibold tracking-[0.62em] text-[color:var(--subtle)]">{label}</p>
-        <h3 className="text-[2.6rem] font-semibold leading-none tracking-[0.18em] text-[color:var(--ink)] md:text-[3.1rem]">
+        <h3 className="text-[1.82rem] font-semibold leading-none tracking-[0.18em] text-[color:var(--ink)] md:text-[2.17rem]">
           {profile.name}
         </h3>
       </div>

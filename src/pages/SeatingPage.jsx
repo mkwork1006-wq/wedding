@@ -249,9 +249,10 @@ function SeatingPage() {
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="mb-3 text-sm font-medium tracking-[0.06em] text-[#7c6988] transition hover:text-[#5f4f69] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b59bc7]"
+              className="mb-3 text-3xl leading-none text-[#7c6988] transition hover:text-[#5f4f69] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b59bc7]"
+              aria-label="席次表画像を閉じる"
             >
-              閉じる
+              ×
             </button>
             {seatingImage ? (
               <img
