@@ -43,17 +43,17 @@ function ProfileBlock({ profile, label, image, isBride }) {
       <dl className="space-y-6 text-[color:var(--ink)]">
         <div className="space-y-2">
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">誕生日</dt>
-          <dd className="text-[1.9rem] font-semibold leading-tight tracking-[0.05em] md:text-[2.35rem]">
+          <dd className="text-[14px] leading-tight tracking-[0.05em]">
             {profile.birthday}
           </dd>
         </div>
         <div className="space-y-2">
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">出身地</dt>
-          <dd className="text-base font-semibold tracking-[0.08em] md:text-lg">{profile.hometown}</dd>
+          <dd className="text-[14px] tracking-[0.08em]">{profile.hometown}</dd>
         </div>
         <div className="space-y-2">
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">好きなもの</dt>
-          <dd className="flex flex-wrap justify-center gap-x-2 gap-y-1 text-sm tracking-[0.04em]">
+          <dd className="flex flex-wrap justify-center gap-x-2 gap-y-1 text-[14px] tracking-[0.04em]">
             {profile.likes.map((item) => (
               <span key={item}>{`#${item}`}</span>
             ))}
@@ -63,7 +63,7 @@ function ProfileBlock({ profile, label, image, isBride }) {
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">
             {profile.partnerFavoriteLabel}
           </dt>
-          <dd className="whitespace-pre-line text-sm leading-relaxed text-[color:var(--ink)] md:text-base">
+          <dd className="whitespace-pre-line text-[14px] leading-relaxed text-[color:var(--ink)]">
             {profile.partnerFavorite}
           </dd>
         </div>
@@ -71,7 +71,7 @@ function ProfileBlock({ profile, label, image, isBride }) {
           <dt className="text-[0.72rem] font-semibold tracking-[0.48em] text-[color:var(--subtle)]">
             {profile.messageLabel}
           </dt>
-          <dd className="whitespace-pre-line text-sm leading-relaxed text-[color:var(--ink)] md:text-base">
+          <dd className="whitespace-pre-line text-[14px] leading-relaxed text-[color:var(--ink)]">
             {profile.message}
           </dd>
         </div>

@@ -35,8 +35,10 @@ const buttonImages = Object.entries(
 }, {});
 
 const heroSlides = topImages;
-const memoryLoopImages = [...memoryImages, ...memoryImages];
+const memoryLoopImages = [...memoryImages, ...memoryImages, ...memoryImages];
 const swipeThreshold = 50;
+const memoryAutoScrollDurationMs = 36000;
+const memoryManualScrollPauseMs = 2400;
 
 function TopPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(() => {
@@ -50,9 +52,20 @@ function TopPage({ onNavigate }) {
   const [isTimelineModalOpen, setIsTimelineModalOpen] = useState(false);
   const touchStartXRef = useRef(null);
   const touchMoveXRef = useRef(null);
+  const memoryScrollerRef = useRef(null);
+  const memoryFrameRef = useRef(null);
+  const memoryLastFrameTimeRef = useRef(null);
+  const memoryPauseUntilRef = useRef(0);
+  const memoryTouchStartXRef = useRef(null);
+  const memoryTouchMovedRef = useRef(false);
+  const memoryHoverRef = useRef(false);
   const totalSlides = heroSlides.length;
   const quickLinks = [
-    { id: "seating", label: "席次表", image: buttonImages["zasakihyou_button.png"] ?? null },
+    {
+      id: "seating",
+      label: "席次表",
+      image: buttonImages["zasekihyou_button2.jpg"] ?? buttonImages["zasakihyou_button.png"] ?? null
+    },
     { id: "courses", label: "コース料理", image: buttonImages["cooking_button2.jpg"] ?? null },
     { id: "profile", label: "プロフィール", image: buttonImages["profile_button2.jpg"] ?? null },
     { id: "gallery", label: "ギャラリー", image: buttonImages["gallery_button2.jpg"] ?? null }
@@ -69,6 +82,81 @@ function TopPage({ onNavigate }) {
   }, [activeIndex, isPaused, totalSlides]);
 
   const isLightboxOpen = selectedMemoryIndex !== null || isTimelineModalOpen;
+
+  useEffect(() => {
+    const scroller = memoryScrollerRef.current;
+    if (!scroller || memoryImages.length <= 1) {
+      return undefined;
+    }
+
+    const alignToMiddle = () => {
+      const segmentWidth = scroller.scrollWidth / 3;
+      if (segmentWidth > 0) {
+        scroller.scrollLeft = segmentWidth;
+      }
+    };
+
+    const frame = window.requestAnimationFrame(alignToMiddle);
+    window.addEventListener("resize", alignToMiddle);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", alignToMiddle);
+    };
+  }, []);
+
+  useEffect(() => {
+    const scroller = memoryScrollerRef.current;
+    if (!scroller || memoryImages.length <= 1) {
+      return undefined;
+    }
+
+    const normalizeMemoryScroll = () => {
+      const segmentWidth = scroller.scrollWidth / 3;
+      if (!segmentWidth) {
+        return 0;
+      }
+
+      if (scroller.scrollLeft <= segmentWidth * 0.5) {
+        scroller.scrollLeft += segmentWidth;
+      } else if (scroller.scrollLeft >= segmentWidth * 1.5) {
+        scroller.scrollLeft -= segmentWidth;
+      }
+
+      return segmentWidth;
+    };
+
+    const tick = (timestamp) => {
+      if (memoryLastFrameTimeRef.current === null) {
+        memoryLastFrameTimeRef.current = timestamp;
+      }
+
+      const elapsed = timestamp - memoryLastFrameTimeRef.current;
+      memoryLastFrameTimeRef.current = timestamp;
+
+      const segmentWidth = normalizeMemoryScroll();
+      const isMemoryPaused = isLightboxOpen || memoryHoverRef.current || timestamp < memoryPauseUntilRef.current;
+
+      if (!isMemoryPaused && segmentWidth > 0) {
+        const pixelsPerMs = segmentWidth / memoryAutoScrollDurationMs;
+        scroller.scrollLeft += elapsed * pixelsPerMs;
+        normalizeMemoryScroll();
+      }
+
+      memoryFrameRef.current = window.requestAnimationFrame(tick);
+    };
+
+    memoryLastFrameTimeRef.current = null;
+    memoryFrameRef.current = window.requestAnimationFrame(tick);
+
+    return () => {
+      if (memoryFrameRef.current !== null) {
+        window.cancelAnimationFrame(memoryFrameRef.current);
+      }
+      memoryFrameRef.current = null;
+      memoryLastFrameTimeRef.current = null;
+    };
+  }, [isLightboxOpen]);
 
   useEffect(() => {
     if (!isLightboxOpen) {
@@ -138,6 +226,66 @@ function TopPage({ onNavigate }) {
   };
 
   const selectedMemoryImage = selectedMemoryIndex !== null ? memoryImages[selectedMemoryIndex] : null;
+
+  const pauseMemoryAutoScroll = (duration = memoryManualScrollPauseMs) => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    memoryPauseUntilRef.current = window.performance.now() + duration;
+  };
+
+  const normalizeMemoryScroll = () => {
+    const scroller = memoryScrollerRef.current;
+    if (!scroller || memoryImages.length <= 1) {
+      return;
+    }
+
+    const segmentWidth = scroller.scrollWidth / 3;
+    if (!segmentWidth) {
+      return;
+    }
+
+    if (scroller.scrollLeft <= segmentWidth * 0.5) {
+      scroller.scrollLeft += segmentWidth;
+    } else if (scroller.scrollLeft >= segmentWidth * 1.5) {
+      scroller.scrollLeft -= segmentWidth;
+    }
+  };
+
+  const handleMemoryTouchStart = (event) => {
+    const startX = event.touches[0]?.clientX;
+    memoryTouchStartXRef.current = startX ?? null;
+    memoryTouchMovedRef.current = false;
+    pauseMemoryAutoScroll();
+  };
+
+  const handleMemoryTouchMove = (event) => {
+    const currentX = event.touches[0]?.clientX;
+    if (memoryTouchStartXRef.current === null || currentX === undefined) {
+      return;
+    }
+
+    if (Math.abs(currentX - memoryTouchStartXRef.current) > 8) {
+      memoryTouchMovedRef.current = true;
+    }
+  };
+
+  const handleMemoryTouchEnd = () => {
+    memoryTouchStartXRef.current = null;
+    pauseMemoryAutoScroll();
+    window.setTimeout(() => {
+      normalizeMemoryScroll();
+    }, 80);
+  };
+
+  const handleMemoryItemClick = (loopIndex) => {
+    if (memoryTouchMovedRef.current) {
+      memoryTouchMovedRef.current = false;
+      return;
+    }
+
+    openMemoryModal(loopIndex);
+  };
 
   const openMemoryModal = (loopIndex) => {
     if (!memoryImages.length) {
@@ -284,30 +432,42 @@ function TopPage({ onNavigate }) {
             <h2 className="relative -left-[30px] px-4 font-['Playfair_Display'] text-[45px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] sm:px-6">
               Memory
             </h2>
-            <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+            <div className="relative left-1/2 w-screen -translate-x-1/2">
               <div
-                className={`flex w-max gap-4 animate-memory-marquee py-1 [animation-duration:36s] hover:[animation-play-state:paused] ${
-                  selectedMemoryImage ? "[animation-play-state:paused]" : ""
-                }`}
+                ref={memoryScrollerRef}
+                className="overflow-x-auto overflow-y-hidden px-4 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6"
+                onMouseEnter={() => {
+                  memoryHoverRef.current = true;
+                }}
+                onMouseLeave={() => {
+                  memoryHoverRef.current = false;
+                }}
+                onTouchStart={handleMemoryTouchStart}
+                onTouchMove={handleMemoryTouchMove}
+                onTouchEnd={handleMemoryTouchEnd}
+                onTouchCancel={handleMemoryTouchEnd}
+                onScroll={normalizeMemoryScroll}
               >
-                {memoryLoopImages.map((image, index) => (
-                  <button
-                    key={`${image}-${index}`}
-                    type="button"
-                    onClick={() => openMemoryModal(index)}
-                    className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2"
-                    aria-label={`思い出の写真 ${(index % memoryImages.length) + 1} を拡大表示`}
-                  >
-                    <img
-                      src={image}
-                      alt={`思い出の写真 ${(index % memoryImages.length) + 1}`}
-                      className="h-[220px] w-auto max-w-none object-cover"
-                      loading="lazy"
-                      fetchPriority="low"
-                      decoding="async"
-                    />
-                  </button>
-                ))}
+                <div className="flex w-max gap-4">
+                  {memoryLoopImages.map((image, index) => (
+                    <button
+                      key={`${image}-${index}`}
+                      type="button"
+                      onClick={() => handleMemoryItemClick(index)}
+                      className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2"
+                      aria-label={`思い出の写真 ${(index % memoryImages.length) + 1} を拡大表示`}
+                    >
+                      <img
+                        src={image}
+                        alt={`思い出の写真 ${(index % memoryImages.length) + 1}`}
+                        className="h-[220px] w-auto max-w-none object-cover"
+                        loading="lazy"
+                        fetchPriority="low"
+                        decoding="async"
+                      />
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
@@ -317,7 +477,7 @@ function TopPage({ onNavigate }) {
             2026.03.29
           </p>
           <p className="mx-auto mt-6 max-w-4xl text-[15px] font-medium leading-8 text-[color:var(--muted)] sm:text-base">
-            本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。<br />このサイトでは席次表、コース料理、プロフィール、ギャラリーを掲載しております。ぜひご活用ください！
+            本日はお忙しい中、私たちの結婚式にお越しいただきありがとうございます。<br />このサイトでは席次表、コース料理、プロフィール、ギャラリーを掲載してます。<br />ぜひご活用ください！
           </p>
           <img
             src={hanatabaImage}
@@ -328,44 +488,10 @@ function TopPage({ onNavigate }) {
           />
         </div>
       </div>
-      <div className="mx-auto !mt-[50px] grid w-full max-w-3xl grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
-        {quickLinks.map(({ id, label, image }) => (
-          <div key={id} className="flex flex-col items-center gap-2">
-            <button
-              type="button"
-              onClick={() => onNavigate?.(id)}
-              className="group w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
-              aria-label={`${label}へ`}
-            >
-              <div className="aspect-[4/5] overflow-hidden rounded-none bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5">
-                {image ? (
-                  <img
-                    src={image}
-                    alt={`${label}のイメージ`}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    loading="lazy"
-                    fetchPriority="low"
-                    decoding="async"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-[#f4f5f8]">
-                    <span className="text-xs font-medium text-[color:var(--subtle)]">画像準備中</span>
-                  </div>
-                )}
-              </div>
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate?.(id)}
-              className="text-sm font-semibold text-[color:var(--ink)] underline decoration-[1.5px] underline-offset-4 transition hover:text-[color:var(--ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
-              aria-label={`${label}へ`}
-            >
-              {label}
-            </button>
-          </div>
-        ))}
-      </div>
-      <section className="mx-auto w-full max-w-5xl px-4 pb-4 pt-12 sm:px-6">
+      <section className="mx-auto w-full max-w-5xl space-y-4 px-4 pb-4 pt-12 sm:px-6">
+        <h2 className="relative -left-[30px] font-['Playfair_Display'] text-[45px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)]">
+          Schedule
+        </h2>
         <button
           type="button"
           onClick={openTimelineModal}
@@ -381,6 +507,48 @@ function TopPage({ onNavigate }) {
             decoding="async"
           />
         </button>
+      </section>
+      <section className="mx-auto !mt-[50px] w-full max-w-3xl space-y-4 px-4 sm:px-6">
+        <h2 className="relative -left-[30px] font-['Playfair_Display'] text-[45px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)]">
+          Menu
+        </h2>
+        <div className="grid w-full grid-cols-2 gap-x-4 gap-y-5 md:grid-cols-4">
+          {quickLinks.map(({ id, label, image }) => (
+            <div key={id} className="flex flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onNavigate?.(id)}
+                className="group w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+                aria-label={`${label}へ`}
+              >
+                <div className="aspect-[4/5] overflow-hidden rounded-none bg-[#fafafa] shadow-sm transition group-hover:-translate-y-0.5">
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={`${label}のイメージ`}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      fetchPriority="low"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-[#f4f5f8]">
+                      <span className="text-xs font-medium text-[color:var(--subtle)]">画像準備中</span>
+                    </div>
+                  )}
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate?.(id)}
+                className="text-sm font-semibold text-[color:var(--ink)] transition hover:text-[color:var(--ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]"
+                aria-label={`${label}へ`}
+              >
+                {label}
+              </button>
+            </div>
+          ))}
+        </div>
       </section>
       {memoryModal}
       {timelineModal}

@@ -108,7 +108,7 @@ const PasswordGate = ({ onUnlock }) => {
           <p className="text-xs uppercase tracking-[0.45em] text-[color:var(--subtle)]">tomotomo wedding</p>
           <h1 className="mt-3 text-2xl font-semibold md:text-3xl">ご招待ゲスト専用ページ</h1>
           <p className="mt-3 text-sm leading-relaxed text-[color:var(--subtle)]">
-            閲覧にはパスワードの入力が必要です。パスワードはエスコートカードの後ろに記載してます。
+            閲覧にはパスワードの入力が必要です。<br />パスワードはエスコートカードの後ろに記載してます。
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
