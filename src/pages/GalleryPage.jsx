@@ -4,7 +4,7 @@ import { SectionShell } from "../components/ui";
 
 const collectImages = (modules) =>
   Object.entries(modules)
-    .sort(([pathA], [pathB]) => pathA.localeCompare(pathB))
+    .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true, sensitivity: "base" }))
     .map(([, source]) => source);
 
 const groomSources = collectImages(
