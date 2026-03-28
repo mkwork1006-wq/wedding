@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import hanatabaImage from "../assets/images/etc/hanataba.png";
 import weddingTimelineImage from "../assets/images/etc/Wedding Timeline.png";
@@ -37,10 +37,8 @@ const buttonImages = Object.entries(
 }, {});
 
 const heroSlides = topImages;
-const memoryLoopImages = [...memoryImages, ...memoryImages, ...memoryImages];
+const memoryLoopImages = [...memoryImages, ...memoryImages];
 const swipeThreshold = 50;
-const memoryAutoScrollDurationMs = 36000;
-const memoryManualScrollPauseMs = 2400;
 
 function TopPage({ onNavigate }) {
   const [activeIndex, setActiveIndex] = useState(() => {
@@ -50,19 +48,11 @@ function TopPage({ onNavigate }) {
     return initialHeroIndex >= 0 ? initialHeroIndex : 0;
   });
   const [isPaused, setIsPaused] = useState(false);
+  const [isMemoryPaused, setIsMemoryPaused] = useState(false);
   const [selectedMemoryIndex, setSelectedMemoryIndex] = useState(null);
   const [isTimelineModalOpen, setIsTimelineModalOpen] = useState(false);
   const touchStartXRef = useRef(null);
   const touchMoveXRef = useRef(null);
-  const memoryScrollerRef = useRef(null);
-  const memoryTrackRef = useRef(null);
-  const memoryFrameRef = useRef(null);
-  const memoryLastFrameTimeRef = useRef(null);
-  const memoryAlignFrameRef = useRef(null);
-  const memoryPauseUntilRef = useRef(0);
-  const memoryTouchStartXRef = useRef(null);
-  const memoryTouchMovedRef = useRef(false);
-  const memoryHoverRef = useRef(false);
   const totalSlides = heroSlides.length;
   const quickLinks = [
     {
@@ -86,152 +76,6 @@ function TopPage({ onNavigate }) {
   }, [activeIndex, isPaused, totalSlides]);
 
   const isLightboxOpen = selectedMemoryIndex !== null || isTimelineModalOpen;
-
-  const getMemorySegmentWidth = useCallback(() => {
-    const scroller = memoryScrollerRef.current;
-    const track = memoryTrackRef.current;
-    if (!scroller || !track || memoryImages.length <= 1) {
-      return 0;
-    }
-
-    const segmentWidth = track.scrollWidth / 3;
-    if (!Number.isFinite(segmentWidth) || segmentWidth <= 0) {
-      return 0;
-    }
-
-    return segmentWidth;
-  }, []);
-
-  const normalizeMemoryScroll = useCallback(() => {
-    const scroller = memoryScrollerRef.current;
-    const segmentWidth = getMemorySegmentWidth();
-    if (!scroller || !segmentWidth) {
-      return 0;
-    }
-
-    if (scroller.scrollLeft <= segmentWidth * 0.5) {
-      scroller.scrollLeft += segmentWidth;
-    } else if (scroller.scrollLeft >= segmentWidth * 1.5) {
-      scroller.scrollLeft -= segmentWidth;
-    }
-
-    return segmentWidth;
-  }, [getMemorySegmentWidth]);
-
-  const scheduleMemoryAlign = useCallback(
-    (preserveProgress = true) => {
-      if (typeof window === "undefined") {
-        return;
-      }
-
-      if (memoryAlignFrameRef.current !== null) {
-        window.cancelAnimationFrame(memoryAlignFrameRef.current);
-      }
-
-      memoryAlignFrameRef.current = window.requestAnimationFrame(() => {
-        memoryAlignFrameRef.current = window.requestAnimationFrame(() => {
-          const scroller = memoryScrollerRef.current;
-          const segmentWidth = getMemorySegmentWidth();
-          if (!scroller || !segmentWidth) {
-            return;
-          }
-
-          if (!preserveProgress || scroller.scrollLeft <= 0) {
-            scroller.scrollLeft = segmentWidth;
-            return;
-          }
-
-          normalizeMemoryScroll();
-        });
-      });
-    },
-    [getMemorySegmentWidth, normalizeMemoryScroll]
-  );
-
-  useEffect(() => {
-    const scroller = memoryScrollerRef.current;
-    const track = memoryTrackRef.current;
-    if (!scroller || !track || memoryImages.length <= 1) {
-      return undefined;
-    }
-
-    const handleLayoutChange = () => {
-      scheduleMemoryAlign(scroller.scrollLeft > 0);
-    };
-
-    scheduleMemoryAlign(false);
-
-    const resizeObserver =
-      typeof window !== "undefined" && typeof window.ResizeObserver === "function"
-        ? new window.ResizeObserver(handleLayoutChange)
-        : null;
-
-    resizeObserver?.observe(scroller);
-    resizeObserver?.observe(track);
-
-    const images = Array.from(track.querySelectorAll("img"));
-    images.forEach((image) => {
-      if (image.complete) {
-        return;
-      }
-
-      image.addEventListener("load", handleLayoutChange);
-      image.addEventListener("error", handleLayoutChange);
-    });
-
-    window.addEventListener("resize", handleLayoutChange);
-
-    return () => {
-      if (memoryAlignFrameRef.current !== null) {
-        window.cancelAnimationFrame(memoryAlignFrameRef.current);
-      }
-
-      resizeObserver?.disconnect();
-      images.forEach((image) => {
-        image.removeEventListener("load", handleLayoutChange);
-        image.removeEventListener("error", handleLayoutChange);
-      });
-      window.removeEventListener("resize", handleLayoutChange);
-    };
-  }, [scheduleMemoryAlign]);
-
-  useEffect(() => {
-    const scroller = memoryScrollerRef.current;
-    if (!scroller || memoryImages.length <= 1) {
-      return undefined;
-    }
-
-    const tick = (timestamp) => {
-      if (memoryLastFrameTimeRef.current === null) {
-        memoryLastFrameTimeRef.current = timestamp;
-      }
-
-      const elapsed = timestamp - memoryLastFrameTimeRef.current;
-      memoryLastFrameTimeRef.current = timestamp;
-
-      const segmentWidth = normalizeMemoryScroll();
-      const isMemoryPaused = isLightboxOpen || memoryHoverRef.current || timestamp < memoryPauseUntilRef.current;
-
-      if (!isMemoryPaused && segmentWidth > 0) {
-        const pixelsPerMs = segmentWidth / memoryAutoScrollDurationMs;
-        scroller.scrollLeft += elapsed * pixelsPerMs;
-        normalizeMemoryScroll();
-      }
-
-      memoryFrameRef.current = window.requestAnimationFrame(tick);
-    };
-
-    memoryLastFrameTimeRef.current = null;
-    memoryFrameRef.current = window.requestAnimationFrame(tick);
-
-    return () => {
-      if (memoryFrameRef.current !== null) {
-        window.cancelAnimationFrame(memoryFrameRef.current);
-      }
-      memoryFrameRef.current = null;
-      memoryLastFrameTimeRef.current = null;
-    };
-  }, [isLightboxOpen, normalizeMemoryScroll]);
 
   useEffect(() => {
     if (!isLightboxOpen) {
@@ -301,48 +145,6 @@ function TopPage({ onNavigate }) {
   };
 
   const selectedMemoryImage = selectedMemoryIndex !== null ? memoryImages[selectedMemoryIndex] : null;
-
-  const pauseMemoryAutoScroll = (duration = memoryManualScrollPauseMs) => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    memoryPauseUntilRef.current = window.performance.now() + duration;
-  };
-
-  const handleMemoryTouchStart = (event) => {
-    const startX = event.touches[0]?.clientX;
-    memoryTouchStartXRef.current = startX ?? null;
-    memoryTouchMovedRef.current = false;
-    pauseMemoryAutoScroll();
-  };
-
-  const handleMemoryTouchMove = (event) => {
-    const currentX = event.touches[0]?.clientX;
-    if (memoryTouchStartXRef.current === null || currentX === undefined) {
-      return;
-    }
-
-    if (Math.abs(currentX - memoryTouchStartXRef.current) > 8) {
-      memoryTouchMovedRef.current = true;
-    }
-  };
-
-  const handleMemoryTouchEnd = () => {
-    memoryTouchStartXRef.current = null;
-    pauseMemoryAutoScroll();
-    window.setTimeout(() => {
-      normalizeMemoryScroll();
-    }, 80);
-  };
-
-  const handleMemoryItemClick = (loopIndex) => {
-    if (memoryTouchMovedRef.current) {
-      memoryTouchMovedRef.current = false;
-      return;
-    }
-
-    openMemoryModal(loopIndex);
-  };
 
   const openMemoryModal = (loopIndex) => {
     if (!memoryImages.length) {
@@ -489,28 +291,27 @@ function TopPage({ onNavigate }) {
             <h2 className="relative -left-[30px] px-4 font-['Playfair_Display'] text-[45px] font-semibold leading-none tracking-[0.01em] text-[color:var(--ink)] sm:px-6">
               Memory
             </h2>
-            <div className="relative left-1/2 w-screen -translate-x-1/2">
+            <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
               <div
-                ref={memoryScrollerRef}
-                className="overflow-x-auto overflow-y-hidden px-4 py-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden sm:px-6"
-                onMouseEnter={() => {
-                  memoryHoverRef.current = true;
-                }}
-                onMouseLeave={() => {
-                  memoryHoverRef.current = false;
-                }}
-                onTouchStart={handleMemoryTouchStart}
-                onTouchMove={handleMemoryTouchMove}
-                onTouchEnd={handleMemoryTouchEnd}
-                onTouchCancel={handleMemoryTouchEnd}
-                onScroll={normalizeMemoryScroll}
+                className="overflow-hidden px-4 py-1 sm:px-6"
+                onMouseEnter={() => setIsMemoryPaused(true)}
+                onMouseLeave={() => setIsMemoryPaused(false)}
+                onTouchStart={() => setIsMemoryPaused(true)}
+                onTouchEnd={() => setIsMemoryPaused(false)}
+                onTouchCancel={() => setIsMemoryPaused(false)}
               >
-                <div ref={memoryTrackRef} className="flex w-max gap-4">
+                <div
+                  className={`flex w-max gap-4 py-1 ${memoryImages.length > 1 ? "animate-memory-marquee" : ""}`}
+                  style={{
+                    animationDuration: "36s",
+                    animationPlayState: isMemoryPaused || isLightboxOpen ? "paused" : "running"
+                  }}
+                >
                   {memoryLoopImages.map((image, index) => (
                     <button
                       key={`${image}-${index}`}
                       type="button"
-                      onClick={() => handleMemoryItemClick(index)}
+                      onClick={() => openMemoryModal(index)}
                       className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2"
                       aria-label={`思い出の写真 ${(index % memoryImages.length) + 1} を拡大表示`}
                     >
@@ -518,7 +319,7 @@ function TopPage({ onNavigate }) {
                         src={image}
                         alt={`思い出の写真 ${(index % memoryImages.length) + 1}`}
                         className="h-[220px] w-auto max-w-none object-cover"
-                        loading="eager"
+                        loading={index < memoryImages.length ? "eager" : "lazy"}
                         fetchPriority="low"
                         decoding="async"
                       />

@@ -28,9 +28,8 @@ const MIN_ZOOM_SCALE = 1;
 const MAX_ZOOM_SCALE = 4;
 
 const createBatch = (tabKey, images, startIndex, count, reveal) =>
-  Array.from({ length: count }, (_, index) => {
+  images.slice(startIndex, startIndex + count).map((src, index) => {
     const position = startIndex + index;
-    const src = images[position % images.length];
     return {
       id: `${tabKey}-${position}`,
       src,
@@ -77,6 +76,8 @@ function GalleryPage() {
   const hasSelection = selectedIndex !== null;
   const selectedImage = hasSelection ? activeImages[selectedIndex] : null;
   const isSliding = slideMotion !== null;
+  const canShowPrev = selectedIndex !== null && selectedIndex > 0;
+  const canShowNext = selectedIndex !== null && selectedIndex < activeImages.length - 1;
 
   const clampOffsets = useCallback((offsetX, offsetY, scale) => {
     const imageElement = activeImageRef.current;
@@ -116,7 +117,7 @@ function GalleryPage() {
       return;
     }
 
-    setItems(createBatch(activeTab, images, 0, IMAGE_BATCH, false));
+    setItems(createBatch(activeTab, images, 0, Math.min(IMAGE_BATCH, images.length), false));
 
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -136,8 +137,14 @@ function GalleryPage() {
         if (loadingRef.current || !activeImages.length) {
           return;
         }
+        if (items.length >= activeImages.length) {
+          return;
+        }
         loadingRef.current = true;
-        setItems((prev) => [...prev, ...createBatch(activeTab, activeImages, prev.length, IMAGE_BATCH, true)]);
+        setItems((prev) => [
+          ...prev,
+          ...createBatch(activeTab, activeImages, prev.length, IMAGE_BATCH, true)
+        ]);
       },
       { rootMargin: "240px 0px" }
     );
@@ -147,7 +154,7 @@ function GalleryPage() {
     return () => {
       observer.disconnect();
     };
-  }, [activeImages, activeTab]);
+  }, [activeImages, activeTab, items.length]);
 
   useEffect(() => {
     loadingRef.current = false;
@@ -166,7 +173,10 @@ function GalleryPage() {
       }
 
       const delta = direction === "next" ? 1 : -1;
-      const nextIndex = (selectedIndex + delta + activeImages.length) % activeImages.length;
+      const nextIndex = selectedIndex + delta;
+      if (nextIndex < 0 || nextIndex >= activeImages.length) {
+        return;
+      }
 
       setSlideMotion({
         from: selectedIndex,
@@ -519,7 +529,10 @@ function GalleryPage() {
                       <button
                         type="button"
                         onClick={showPrev}
-                        className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                        disabled={!canShowPrev}
+                        className={`text-[2.15rem] leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
+                          canShowPrev ? "text-white/85 hover:text-white" : "cursor-default text-white/25"
+                        }`}
                         aria-label="前の写真"
                       >
                         ‹
@@ -527,7 +540,10 @@ function GalleryPage() {
                       <button
                         type="button"
                         onClick={showNext}
-                        className="text-[2.15rem] leading-none text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                        disabled={!canShowNext}
+                        className={`text-[2.15rem] leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
+                          canShowNext ? "text-white/85 hover:text-white" : "cursor-default text-white/25"
+                        }`}
                         aria-label="次の写真"
                       >
                         ›
@@ -582,7 +598,7 @@ function GalleryPage() {
                 type="button"
                 onClick={() => {
                   setSlideMotion(null);
-                  setSelectedIndex(index % activeImages.length);
+                  setSelectedIndex(index);
                 }}
                 className={`group relative aspect-square w-full overflow-hidden rounded-[14px] border border-[#f0efed] bg-[#fafafa] shadow-sm transition hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
                   item.reveal ? "animate-gallery-reveal" : ""
